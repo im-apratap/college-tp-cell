@@ -7,7 +7,7 @@ import { connectDB } from "./config/db.js";
 const app = express();
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: ENV.CORS_ORIGIN,
     credentials: true,
   })
 );
@@ -19,12 +19,20 @@ app.use(cookieParser());
 // Routes Import
 // import userRouter from "./routes/user.routes.js";
 // import adminRouter form "./routes/admin.routes.js"
+import placementRouter from "./routes/placement.routes.js";
+
+import adminRouter from "./routes/admin.routes.js";
+import { errorHandler } from "./middlewares/error.middleware.js";
 
 // // Routes declaration
 // app.use("/api/v1/users", userRouter);
-app.use("/health",(req,res)=>{
-    res.send("Working perfectly")
-})
+app.use("/api/v1/placement", placementRouter);
+app.use("/api/v1/admin", adminRouter);
+app.use("/health", (req, res) => {
+  res.send("Working perfectly");
+});
+
+app.use(errorHandler);
 
 const startServer = async () => {
   try {

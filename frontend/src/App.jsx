@@ -1,11 +1,28 @@
-import React from 'react'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import StudentForm from "./pages/StudentForm";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-const App = () => {
+function App() {
   return (
-    <div>
-      Hello how are you
-    </div>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<StudentForm />} />
+
+        {/* Admin Routes */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
