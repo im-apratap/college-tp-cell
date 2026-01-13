@@ -20,7 +20,7 @@ const AdminDashboard = () => {
   const fetchSubmissions = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/api/v1/admin/submissions",
+        `${import.meta.env.VITE_API_BASE_URL}/admin/submissions`,
         {
           withCredentials: true,
         }
@@ -42,7 +42,7 @@ const AdminDashboard = () => {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "http://localhost:8000/api/v1/admin/logout",
+        `${import.meta.env.VITE_API_BASE_URL}/admin/logout`,
         {},
         { withCredentials: true }
       );

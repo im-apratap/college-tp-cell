@@ -48,7 +48,7 @@ const StudentForm = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:8000/api/v1/placement/submit",
+        `${import.meta.env.VITE_API_BASE_URL}/placement/submit`,
         payload
       );
 

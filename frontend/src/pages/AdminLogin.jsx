@@ -37,7 +37,7 @@ const AdminLogin = () => {
 
       // Ensure credentials allows cookies to be set
       const response = await axios.post(
-        "http://localhost:8000/api/v1/admin/login",
+        `${import.meta.env.VITE_API_BASE_URL}/admin/login`,
         payload,
         {
           withCredentials: true,
