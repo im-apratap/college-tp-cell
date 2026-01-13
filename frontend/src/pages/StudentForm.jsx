@@ -22,10 +22,10 @@ const StudentForm = () => {
     branch: "",
     collegeName: "",
     batch: "",
-    cgpa: "",
+    currentCgpa: "",
     activeBacklogs: 0,
-    registrationNumber10th: "",
-    registrationNumber12th: "",
+    percentage10th: "",
+    percentage12th: "",
     aadharNumber: "",
   });
 
@@ -43,7 +43,7 @@ const StudentForm = () => {
     try {
       const payload = {
         ...formData,
-        cgpa: parseFloat(formData.cgpa),
+        currentCgpa: parseFloat(formData.currentCgpa),
         activeBacklogs: parseInt(formData.activeBacklogs),
       };
 
@@ -63,10 +63,10 @@ const StudentForm = () => {
         branch: "",
         collegeName: "",
         batch: "",
-        cgpa: "",
+        currentCgpa: "",
         activeBacklogs: 0,
-        registrationNumber10th: "",
-        registrationNumber12th: "",
+        percentage10th: "",
+        percentage12th: "",
         aadharNumber: "",
       });
     } catch (error) {
@@ -231,13 +231,13 @@ const StudentForm = () => {
                   placeholder="2022-2026"
                 />
                 <Input
-                  label="CGPA"
+                  label="Current CGPA"
                   type="number"
                   step="0.01"
                   min="0"
                   max="10"
-                  name="cgpa"
-                  value={formData.cgpa}
+                  name="currentCgpa"
+                  value={formData.currentCgpa}
                   onChange={handleChange}
                   required
                   placeholder="8.5"
@@ -254,29 +254,29 @@ const StudentForm = () => {
               </div>
             </div>
 
-            {/* Professional Details (Reg Nos only now) */}
+            {/* Professional Details (Percentages) */}
             <div className="bg-gray-50 p-4 rounded-md border border-gray-100">
               <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
                 <Briefcase className="h-5 w-5 text-gray-500" /> Academic
-                Registration #
+                Performance
               </h3>
               <div className="grid grid-cols-1 gap-y-6 gap-x-4">
                 <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
                   <Input
-                    label="10th Registration Number"
-                    name="registrationNumber10th"
-                    value={formData.registrationNumber10th}
+                    label="10th Percentage"
+                    name="percentage10th"
+                    value={formData.percentage10th}
                     onChange={handleChange}
                     required
-                    placeholder="Enter 10th Reg No."
+                    placeholder="Enter 10th % (e.g. 95%)"
                   />
                   <Input
-                    label="12th Registration Number"
-                    name="registrationNumber12th"
-                    value={formData.registrationNumber12th}
+                    label="12th Percentage"
+                    name="percentage12th"
+                    value={formData.percentage12th}
                     onChange={handleChange}
                     required
-                    placeholder="Enter 12th Reg No."
+                    placeholder="Enter 12th % (e.g. 88%)"
                   />
                 </div>
               </div>

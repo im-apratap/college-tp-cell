@@ -117,4 +117,28 @@ const getAllStudentProfiles = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, students, "Students fetched successfully"));
 });
 
-export { registerAdmin, loginAdmin, logoutAdmin, getAllStudentProfiles };
+const deleteStudentProfile = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    throw new ApiError(400, "Student ID is required");
+  }
+
+  const deletedStudent = await StudentProfile.findByIdAndDelete(id);
+
+  if (!deletedStudent) {
+    throw new ApiError(404, "Student not found");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Student profile deleted successfully"));
+});
+
+export {
+  registerAdmin,
+  loginAdmin,
+  logoutAdmin,
+  getAllStudentProfiles,
+  deleteStudentProfile,
+};

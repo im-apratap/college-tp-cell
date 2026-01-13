@@ -33,8 +33,11 @@ const submitProfile = asyncHandler(async (req, res) => {
       collegeName,
       branch,
       batch,
+      batch,
       aadharNumber,
-      registrationNumber10th,
+      aadharNumber,
+      percentage10th,
+      percentage12th,
     ].some((field) => field?.trim() === "")
   ) {
     throw new ApiError(400, "All required fields must be provided");
@@ -52,11 +55,11 @@ const submitProfile = asyncHandler(async (req, res) => {
     profile.branch = branch;
     profile.collegeName = collegeName;
     profile.batch = batch;
-    profile.cgpa = cgpa;
+    profile.currentCgpa = currentCgpa;
     profile.activeBacklogs = activeBacklogs;
     profile.aadharNumber = aadharNumber;
-    profile.registrationNumber10th = registrationNumber10th;
-    profile.registrationNumber12th = registrationNumber12th;
+    profile.percentage10th = percentage10th;
+    profile.percentage12th = percentage12th;
     profile.resumeLink = resumeLink;
     profile.linkedinProfile = linkedinProfile;
     profile.portfolioLink = portfolioLink;
@@ -87,11 +90,11 @@ const submitProfile = asyncHandler(async (req, res) => {
     branch,
     collegeName,
     batch,
-    cgpa,
+    currentCgpa,
     activeBacklogs,
     aadharNumber,
-    registrationNumber10th,
-    registrationNumber12th,
+    percentage10th,
+    percentage12th,
     resumeLink,
     linkedinProfile,
     portfolioLink,

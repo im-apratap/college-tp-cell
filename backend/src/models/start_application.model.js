@@ -51,7 +51,7 @@ const studentProfileSchema = new Schema(
       required: true, // e.g., "2022-2026"
       trim: true,
     },
-    cgpa: {
+    currentCgpa: {
       type: Number,
       required: true,
       min: 0,
@@ -71,12 +71,12 @@ const studentProfileSchema = new Schema(
       unique: true,
       trim: true,
     },
-    registrationNumber10th: {
+    percentage10th: {
       type: String,
       required: true,
       trim: true,
     },
-    registrationNumber12th: {
+    percentage12th: {
       type: String,
       required: true,
       trim: true,
