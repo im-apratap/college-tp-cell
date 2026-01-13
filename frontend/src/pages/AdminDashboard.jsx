@@ -4,14 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Button from "../components/Button";
-import {
-  LogOut,
-  FileText,
-  Search,
-  Trash2,
-  X,
-  AlertTriangle,
-} from "lucide-react";
+import { LogOut, FileText, Search, Trash2, X } from "lucide-react";
 
 const AdminDashboard = () => {
   const [students, setStudents] = useState([]);
@@ -324,7 +317,7 @@ const AdminDashboard = () => {
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
                   <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                    <AlertTriangle className="h-6 w-6 text-red-600" />
+                    <Trash2 className="h-6 w-6 text-red-600" />
                   </div>
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                     <h3
