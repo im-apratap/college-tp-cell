@@ -48,7 +48,7 @@ const studentProfileSchema = new Schema(
     },
     batch: {
       type: String,
-      required: true, // e.g., "2022-2026"
+      required: true,
       trim: true,
     },
     currentCgpa: {

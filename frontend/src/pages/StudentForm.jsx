@@ -228,7 +228,7 @@ const StudentForm = () => {
                   value={formData.batch}
                   onChange={handleChange}
                   required
-                  placeholder="2022-2026"
+                  placeholder="Enter Batch (e.g. 2022-26)"
                 />
                 <Input
                   label="Current CGPA"
@@ -240,7 +240,7 @@ const StudentForm = () => {
                   value={formData.currentCgpa}
                   onChange={handleChange}
                   required
-                  placeholder="8.5"
+                  placeholder="Enter Current CGPA (e.g. 8)"
                 />
                 <Input
                   label="Active Backlogs"
