@@ -2,7 +2,7 @@ import express, { urlencoded } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { ENV } from "./config/env.js";
-// import { connectDB } from "./config/db.js";
+import { connectDB } from "./config/db.js";
 
 const app = express();
 app.use(
@@ -18,6 +18,7 @@ app.use(cookieParser());
 
 // Routes Import
 // import userRouter from "./routes/user.routes.js";
+// import adminRouter form "./routes/admin.routes.js"
 
 // // Routes declaration
 // app.use("/api/v1/users", userRouter);
@@ -27,7 +28,7 @@ app.use("/health",(req,res)=>{
 
 const startServer = async () => {
   try {
-    // await connectDB();
+    await connectDB();
     app.listen(ENV.PORT, () => {
       console.log(`Server running on port ${ENV.PORT}`);
     });
