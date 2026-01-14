@@ -1,18 +1,18 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const ProtectedRoute = ({ children }) => {
-  // In a real app, you might want to verify token validity with an API call
-  // or decode it to check expiration. For now, simple cookie check or
-  // checking if we kept a login flag in localStorage/Context.
-  // Since we used httpOnly cookies, frontend can't read them directly easily
-  // without an API call to /me or check.
+  const { isAuthenticated, isLoading } = useAuth();
 
-  // For this simple implementation, let's assume we store a flag in localStorage on login
-  // Or better, we trust the API to return 401 and handle it in axios interceptor.
-  // BUT, to prevent accessing the route *visually*, we need some client state.
-
-  const isAuthenticated = localStorage.getItem("isAdminLoggedIn") === "true";
+  if (isLoading) {
+    // You can replace this with a proper loading spinner component
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/admin/login" replace />;

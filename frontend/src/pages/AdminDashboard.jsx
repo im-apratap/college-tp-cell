@@ -58,13 +58,14 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteClick = (student) => {
+    console.log("Delete clicked for:", student);
     setStudentToDelete(student);
     setDeleteModalOpen(true);
     setDeleteConfirmation("");
   };
 
   const confirmDelete = async () => {
-    if (deleteConfirmation.toLowerCase() !== "delete") {
+    if ((deleteConfirmation || "").trim().toLowerCase() !== "delete") {
       toast.error("Please type 'delete' to confirm.");
       return;
     }
@@ -82,7 +83,8 @@ const AdminDashboard = () => {
       setDeleteModalOpen(false);
       setStudentToDelete(null);
     } catch (error) {
-      toast.error("Failed to delete profile");
+      console.error("Delete failed:", error);
+      toast.error(error.response?.data?.message || "Failed to delete profile");
     }
   };
 
@@ -299,21 +301,14 @@ const AdminDashboard = () => {
           role="dialog"
           aria-modal="true"
         >
-          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+          <div className="flex min-h-screen items-center justify-center p-4 text-center">
             <div
               className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
               aria-hidden="true"
               onClick={() => setDeleteModalOpen(false)}
             ></div>
 
-            <span
-              className="hidden sm:inline-block sm:align-middle sm:h-screen"
-              aria-hidden="true"
-            >
-              &#8203;
-            </span>
-
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:w-full sm:max-w-lg">
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="sm:flex sm:items-start">
                   <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
@@ -357,9 +352,11 @@ const AdminDashboard = () => {
                 <button
                   type="button"
                   onClick={confirmDelete}
-                  disabled={deleteConfirmation.toLowerCase() !== "delete"}
+                  disabled={
+                    (deleteConfirmation || "").trim().toLowerCase() !== "delete"
+                  }
                   className={`w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
-                    deleteConfirmation.toLowerCase() === "delete"
+                    (deleteConfirmation || "").trim().toLowerCase() === "delete"
                       ? "bg-red-600 hover:bg-red-700 focus:ring-red-500"
                       : "bg-red-300 cursor-not-allowed"
                   }`}

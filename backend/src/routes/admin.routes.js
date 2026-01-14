@@ -5,6 +5,7 @@ import {
   logoutAdmin,
   getAllStudentProfiles,
   deleteStudentProfile,
+  getCurrentAdmin,
 } from "../controllers/admin.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -15,6 +16,7 @@ router.route("/login").post(loginAdmin);
 
 // Secured routes
 router.route("/logout").post(verifyJWT, logoutAdmin);
+router.route("/me").get(verifyJWT, getCurrentAdmin);
 router.route("/submissions").get(verifyJWT, getAllStudentProfiles);
 router.route("/submissions/:id").delete(verifyJWT, deleteStudentProfile);
 
