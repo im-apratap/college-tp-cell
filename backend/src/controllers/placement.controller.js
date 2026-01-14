@@ -2,6 +2,7 @@ import { StudentProfile } from "../models/start_application.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import crypto from "crypto";
 
 // Submit or Update Profile
 const submitProfile = asyncHandler(async (req, res) => {
@@ -76,8 +77,7 @@ const submitProfile = asyncHandler(async (req, res) => {
   }
 
   // Create new profile
-  const uniqueId =
-    "NCE-" + Date.now().toString().slice(-6) + Math.floor(Math.random() * 1000);
+  const uniqueId = "NCE-" + crypto.randomBytes(4).toString("hex").toUpperCase();
 
   profile = await StudentProfile.create({
     uniqueId,

@@ -83,24 +83,42 @@ const StudentForm = () => {
   if (submittedStudent) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-8 text-center">
-          <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+        <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-8 text-center print-area border-2 border-dashed border-gray-200">
+          <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4 no-print">
             <CheckCircle className="h-6 w-6 text-green-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2 no-print">
             Submission Successful!
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-600 mb-6 no-print">
             Your application has been received. Please save your Unique ID and
             Barcode.
           </p>
 
-          <div className="bg-gray-100 p-4 rounded-md mb-6">
+          <div className="text-center mb-4 hidden print:block">
+            <h1 className="text-xl font-bold">
+              Nalanda College of Engineering
+            </h1>
+            <p className="text-sm text-gray-500">Placement Drive Admit Card</p>
+          </div>
+
+          <div className="bg-gray-100 p-4 rounded-md mb-6 print:bg-white print:border print:border-gray-300">
             <p className="text-sm text-gray-500 uppercase tracking-wide font-semibold mb-1">
               Unique ID
             </p>
             <p className="text-xl font-mono font-bold text-blue-600">
               {submittedStudent.uniqueId}
+            </p>
+            <p className="mt-2 text-md font-medium text-gray-800">
+              {submittedStudent.fullName}
+            </p>
+            <p className="text-sm text-gray-500 text-left mt-2">
+              <span className="font-semibold">Roll No:</span>{" "}
+              {submittedStudent.rollNumber}
+            </p>
+            <p className="text-sm text-gray-500 text-left">
+              <span className="font-semibold">Branch:</span>{" "}
+              {submittedStudent.branch}
             </p>
           </div>
 
@@ -113,13 +131,22 @@ const StudentForm = () => {
             />
           </div>
 
-          <Button
-            variant="primary"
-            onClick={() => setSubmittedStudent(null)}
-            className="w-full"
-          >
-            Submit Another Response
-          </Button>
+          <div className="flex flex-col gap-3 no-print">
+            <Button
+              variant="outline"
+              onClick={() => window.print()}
+              className="w-full flex items-center justify-center gap-2"
+            >
+              Print Receipt
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => setSubmittedStudent(null)}
+              className="w-full"
+            >
+              Submit Another Response
+            </Button>
+          </div>
         </div>
       </div>
     );
