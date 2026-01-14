@@ -4,107 +4,126 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import crypto from "crypto";
 
-// Submit or Update Profile
 const submitProfile = asyncHandler(async (req, res) => {
-  const {
-    fullName,
-    rollNumber,
-    email,
-    phone,
-    branch,
-    collegeName,
-    batch,
-    currentCgpa,
-    activeBacklogs,
-    aadharNumber,
-    percentage10th,
-    percentage12th,
-    resumeLink,
-    linkedinProfile,
-    portfolioLink,
-  } = req.body;
-
-  // Basic validation
-  if (
-    [
+  try {
+    const {
       fullName,
       rollNumber,
       email,
       phone,
-      collegeName,
       branch,
+      collegeName,
       batch,
+      currentCgpa,
+      activeBacklogs,
       aadharNumber,
       percentage10th,
       percentage12th,
-    ].some((field) => field?.trim() === "")
-  ) {
-    throw new ApiError(400, "All required fields must be provided");
-  }
+      resumeLink,
+      linkedinProfile,
+      portfolioLink,
+    } = req.body;
 
-  // Check if profile already exists
-  let profile = await StudentProfile.findOne({
-    $or: [{ rollNumber }, { email }, { aadharNumber }],
-  });
+    // Basic validation
+    if (
+      [
+        fullName,
+        rollNumber,
+        email,
+        phone,
+        collegeName,
+        branch,
+        batch,
+        aadharNumber,
+        percentage10th,
+        percentage12th,
+      ].some((field) => typeof field === "string" && field?.trim() === "")
+    ) {
+      throw new ApiError(400, "All required fields must be provided");
+    }
 
-  if (profile) {
-    // Update existing profile
-    profile.fullName = fullName;
-    profile.phone = phone;
-    profile.branch = branch;
-    profile.collegeName = collegeName;
-    profile.batch = batch;
-    profile.currentCgpa = currentCgpa;
-    profile.activeBacklogs = activeBacklogs;
-    profile.aadharNumber = aadharNumber;
-    profile.percentage10th = percentage10th;
-    profile.percentage12th = percentage12th;
-    profile.resumeLink = resumeLink;
-    profile.linkedinProfile = linkedinProfile;
-    profile.portfolioLink = portfolioLink;
+    if (isNaN(currentCgpa)) {
+      throw new ApiError(400, "Current CGPA must be a valid number");
+    }
 
-    // Ensure rollNumber and email match/are not inadvertently swapped if checking logic changes
-    // But since we query by them, we assume the user intends to update their own profile.
-    // In a real app, we'd verify user ID from token. Here we trust the input for now or assume
-    // checking logic holds.
-    // For safety, let's just save.
+    // Check if profile already exists
+    let profile = await StudentProfile.findOne({
+      $or: [{ rollNumber }, { email }, { aadharNumber }],
+    });
 
-    await profile.save();
+    if (profile) {
+      // Update existing profile
+      profile.fullName = fullName;
+      profile.phone = phone;
+      profile.branch = branch;
+      profile.collegeName = collegeName;
+      profile.batch = batch;
+      profile.currentCgpa = currentCgpa;
+      profile.activeBacklogs = activeBacklogs || 0;
+      profile.aadharNumber = aadharNumber;
+      profile.percentage10th = percentage10th;
+      profile.percentage12th = percentage12th;
+      profile.resumeLink = resumeLink;
+      profile.linkedinProfile = linkedinProfile;
+      profile.portfolioLink = portfolioLink;
+
+      await profile.save();
+
+      return res
+        .status(200)
+        .json(new ApiResponse(200, profile, "Profile updated successfully"));
+    }
+
+    // Create new profile
+    const uniqueId =
+      "NCE-" + crypto.randomBytes(4).toString("hex").toUpperCase();
+
+    profile = await StudentProfile.create({
+      uniqueId,
+      fullName,
+      rollNumber,
+      email,
+      phone,
+      branch,
+      collegeName,
+      batch,
+      currentCgpa,
+      activeBacklogs: activeBacklogs || 0,
+      aadharNumber,
+      percentage10th,
+      percentage12th,
+      resumeLink,
+      linkedinProfile,
+      portfolioLink,
+    });
+
+    if (!profile) {
+      throw new ApiError(
+        500,
+        "Something went wrong while creating the profile"
+      );
+    }
 
     return res
-      .status(200)
-      .json(new ApiResponse(200, profile, "Profile updated successfully"));
+      .status(201)
+      .json(new ApiResponse(201, profile, "Profile submitted successfully"));
+  } catch (error) {
+    if (error.code === 11000) {
+      // Duplicate key error
+      const field = Object.keys(error.keyPattern)[0];
+      throw new ApiError(409, `A student with this ${field} already exists.`);
+    }
+    // Re-throw known ApiErrors
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    // Improve default error logging
+    console.error("Profile Submission Error:", error);
+    throw new ApiError(
+      500,
+      "Something went wrong while submitting the profile. Please check your inputs."
+    );
   }
-
-  // Create new profile
-  const uniqueId = "NCE-" + crypto.randomBytes(4).toString("hex").toUpperCase();
-
-  profile = await StudentProfile.create({
-    uniqueId,
-    fullName,
-    rollNumber,
-    email,
-    phone,
-    branch,
-    collegeName,
-    batch,
-    currentCgpa,
-    activeBacklogs,
-    aadharNumber,
-    percentage10th,
-    percentage12th,
-    resumeLink,
-    linkedinProfile,
-    portfolioLink,
-  });
-
-  if (!profile) {
-    throw new ApiError(500, "Something went wrong while creating the profile");
-  }
-
-  return res
-    .status(201)
-    .json(new ApiResponse(201, profile, "Profile submitted successfully"));
 });
 
 // Get Profile by Roll Number

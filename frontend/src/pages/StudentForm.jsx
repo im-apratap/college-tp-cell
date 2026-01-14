@@ -43,8 +43,12 @@ const StudentForm = () => {
     try {
       const payload = {
         ...formData,
-        currentCgpa: parseFloat(formData.currentCgpa),
-        activeBacklogs: parseInt(formData.activeBacklogs),
+        currentCgpa: formData.currentCgpa
+          ? parseFloat(formData.currentCgpa)
+          : null, // Allow validation to catch null if required, or handle gracefully
+        activeBacklogs: formData.activeBacklogs
+          ? parseInt(formData.activeBacklogs)
+          : 0, // Default to 0 if empty
       };
 
       const response = await axios.post(

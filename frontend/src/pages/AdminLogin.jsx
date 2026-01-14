@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useAuth } from "../context/AuthContext";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import { Lock } from "lucide-react";
@@ -16,6 +17,8 @@ const AdminLogin = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const { login } = useAuth();
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -24,15 +27,12 @@ const AdminLogin = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Backend expects username OR email. Let's assume input is username for now, or use a single field.
-      // But our UI asks for username/email. Let's send both or filter.
-      // The backend check: $or: [{ username }, { email }]
-      // If user types in 'email' field in UI, send as email.
-
+      // Determine if input is email or username
+      const isEmail = formData.username.includes("@");
       const payload = {
         password: formData.password,
-        username: formData.username,
-        email: formData.username.includes("@") ? formData.username : "", // Simple heuristic
+        username: isEmail ? "" : formData.username,
+        email: isEmail ? formData.username : "",
       };
 
       // Ensure credentials allows cookies to be set
@@ -46,7 +46,10 @@ const AdminLogin = () => {
 
       toast.success(response.data.message || "Login successful");
 
-      // Set flag for ProtectedRoute
+      // Update global auth state
+      login(response.data.data.user);
+
+      // Set flag for ProtectedRoute (backup mechanism)
       localStorage.setItem("isAdminLoggedIn", "true");
       // Store user info if needed
       localStorage.setItem(
@@ -54,8 +57,8 @@ const AdminLogin = () => {
         JSON.stringify(response.data.data.user)
       );
 
-      // Redirect to dashboard
-      setTimeout(() => navigate("/admin/dashboard"), 1000);
+      // Redirect to dashboard immediately
+      navigate("/admin/dashboard");
     } catch (error) {
       toast.error(error.response?.data?.message || "Invalid credentials");
     } finally {
