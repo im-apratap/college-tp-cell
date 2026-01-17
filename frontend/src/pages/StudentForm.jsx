@@ -134,7 +134,7 @@ const StudentForm = () => {
 
       const response = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/placement/submit`,
-        payload
+        payload,
       );
 
       setSubmittedStudent(response.data.data);
@@ -159,7 +159,7 @@ const StudentForm = () => {
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
-          "Something went wrong. Please try again."
+          "Something went wrong. Please try again.",
       );
       console.error(error);
     } finally {
@@ -222,13 +222,42 @@ const StudentForm = () => {
                     {submittedStudent.fullName}
                   </p>
                 </div>
-                <div>
+                <div className="flex flex-col gap-1">
                   <p className="text-xs text-gray-500 uppercase font-semibold">
-                    Roll / Registration No
+                    Registration No
                   </p>
-                  <p className="text-lg font-medium text-gray-900">
+                  <p className="text-md font-medium text-gray-900 border-b border-gray-100 pb-1">
                     {submittedStudent.registrationNumber ||
                       submittedStudent.rollNumber}
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <p className="text-xs text-gray-500 uppercase font-semibold">
+                    Date of Birth
+                  </p>
+                  <p className="text-md font-medium text-gray-900 border-b border-gray-100 pb-1">
+                    {new Date(submittedStudent.dob).toLocaleDateString()}
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <p className="text-xs text-gray-500 uppercase font-semibold">
+                    Gender
+                  </p>
+                  <p className="text-md font-medium text-gray-900 border-b border-gray-100 pb-1">
+                    {submittedStudent.gender}
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-1 col-span-2">
+                  <p className="text-xs text-gray-500 uppercase font-semibold">
+                    College
+                  </p>
+                  <p className="text-md font-medium text-gray-900 border-b border-gray-100 pb-1">
+                    {BIHAR_ENGINEERING_COLLEGES.find(
+                      (c) => c.value === submittedStudent.collegeName,
+                    )?.label || submittedStudent.collegeName}
                   </p>
                 </div>
                 <div>
