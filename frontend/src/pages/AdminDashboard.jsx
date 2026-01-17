@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Button from "../components/Button";
-import { LogOut, FileText, Search, Trash2, X } from "lucide-react";
+import { LogOut, FileText, Search, Trash2, X, QrCode } from "lucide-react";
+import { Scanner } from "@yudiel/react-qr-scanner";
 
 const AdminDashboard = () => {
   const [students, setStudents] = useState([]);
@@ -13,6 +14,7 @@ const AdminDashboard = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState(null);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
+  const [scanning, setScanning] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -99,6 +101,20 @@ const AdminDashboard = () => {
     );
   });
 
+  const handleScan = (detectedCodes) => {
+    if (detectedCodes && detectedCodes.length > 0) {
+      setSearchTerm(detectedCodes[0].rawValue);
+      setScanning(false);
+      toast.success("QR Code scanned successfully!");
+    }
+  };
+
+  const handleError = (err) => {
+    console.error(err);
+    toast.error("Failed to access camera");
+    setScanning(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 relative">
       {/* Header */}
@@ -128,8 +144,8 @@ const AdminDashboard = () => {
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           {/* Search Bar */}
-          <div className="mb-6">
-            <div className="relative rounded-md shadow-sm max-w-lg">
+          <div className="mb-6 flex gap-4">
+            <div className="relative rounded-md shadow-sm max-w-lg w-full">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-gray-400" />
               </div>
@@ -141,6 +157,14 @@ const AdminDashboard = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
+            <Button
+              variant="outline"
+              onClick={() => setScanning(true)}
+              className="flex items-center gap-2"
+            >
+              <QrCode className="h-5 w-5" />
+              Scan QR
+            </Button>
           </div>
 
           {loading ? (
@@ -292,6 +316,32 @@ const AdminDashboard = () => {
           )}
         </div>
       </div>
+      {/* Scanner Modal */}
+      {scanning && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg p-6 max-w-sm w-full relative">
+            <button
+              onClick={() => setScanning(false)}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+            >
+              <X className="h-6 w-6" />
+            </button>
+            <h3 className="text-lg font-medium text-gray-900 mb-4 text-center">
+              Scan Student QR Code
+            </h3>
+            <div className="overflow-hidden rounded-lg bg-black">
+              <Scanner
+                onScan={handleScan}
+                onError={handleError}
+                styles={{ container: { width: "100%" } }}
+              />
+            </div>
+            <p className="mt-4 text-center text-sm text-gray-500">
+              Align the QR code within the frame to scan.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Delete Confirmation Modal */}
       {deleteModalOpen && (

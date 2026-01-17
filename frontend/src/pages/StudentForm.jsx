@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Barcode from "react-barcode";
+import QRCode from "react-qr-code";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import {
@@ -127,12 +127,7 @@ const StudentForm = () => {
           </div>
 
           <div className="flex justify-center mb-6">
-            <Barcode
-              value={submittedStudent.uniqueId}
-              width={2}
-              height={50}
-              displayValue={false}
-            />
+            <QRCode value={submittedStudent.uniqueId} size={128} />
           </div>
 
           <div className="flex flex-col gap-3 no-print">
