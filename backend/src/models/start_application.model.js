@@ -14,7 +14,7 @@ const studentProfileSchema = new Schema(
       unique: true,
       index: true,
     },
-    rollNumber: {
+    registrationNumber: {
       type: String,
       required: true,
       unique: true,
@@ -34,12 +34,22 @@ const studentProfileSchema = new Schema(
       required: true,
       trim: true,
     },
+    gender: {
+      type: String,
+      required: true,
+      enum: ["Male", "Female", "Other"],
+    },
+    dob: {
+      type: Date,
+      required: true,
+    },
 
     // Academic Details
     branch: {
       type: String,
       required: true,
       trim: true,
+      index: true,
     },
     collegeName: {
       type: String,
@@ -64,12 +74,18 @@ const studentProfileSchema = new Schema(
     },
 
     // Professional Details
-    // Professional Details
     aadharNumber: {
       type: String,
       required: true,
       unique: true,
       trim: true,
+      validate: {
+        validator: function (v) {
+          return /^\d{12}$/.test(v);
+        },
+        message: (props) =>
+          `${props.value} is not a valid 12-digit Aadhar number!`,
+      },
     },
     percentage10th: {
       type: String,

@@ -5,6 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import QRCode from "react-qr-code";
 import Input from "../components/Input";
+import Select from "../components/Select";
 import Button from "../components/Button";
 import {
   Send,
@@ -14,12 +15,82 @@ import {
   CheckCircle,
 } from "lucide-react";
 
+const BIHAR_ENGINEERING_COLLEGES = [
+  { value: "NCE_Chandi", label: "Nalanda College of Engineering, Chandi" },
+  { value: "MIT_Muzaffarpur", label: "Muzaffarpur Institute of Technology" },
+  { value: "BCE_Bhagalpur", label: "Bhagalpur College of Engineering" },
+  { value: "GCE_Gaya", label: "Gaya College of Engineering" },
+  { value: "DCE_Darbhanga", label: "Darbhanga College of Engineering" },
+  {
+    value: "LNJPIT_Chapra",
+    label: "Loknayak Jai Prakash Institute of Technology, Chapra",
+  },
+  { value: "BCE_Bakhtiyarpur", label: "Bakhtiyarpur College of Engineering" },
+  { value: "SIT_Sitamarhi", label: "Sitamarhi Institute of Technology" },
+  {
+    value: "RRD_Begusarai",
+    label:
+      "Rashtrakavi Ramdhari Singh Dinkar College of Engineering, Begusarai",
+  },
+  { value: "KCE_Katihar", label: "Katihar College of Engineering" },
+  { value: "PCE_Purnea", label: "Purnea College of Engineering" },
+  { value: "SCE_Saharsa", label: "Saharsa College of Engineering" },
+  { value: "SEC_Supaul", label: "Supaul College of Engineering" },
+  { value: "GEC_Banka", label: "Government Engineering College, Banka" },
+  { value: "GEC_Vaishali", label: "Government Engineering College, Vaishali" },
+  { value: "GEC_Jamui", label: "Government Engineering College, Jamui" },
+  { value: "GEC_Ramgarh", label: "Government Engineering College, Ramgarh" },
+  { value: "GEC_Nawada", label: "Government Engineering College, Nawada" },
+  {
+    value: "GEC_Kishanganj",
+    label: "Government Engineering College, Kishanganj",
+  },
+  { value: "GEC_Munger", label: "Government Engineering College, Munger" },
+  { value: "GEC_Sheohar", label: "Government Engineering College, Sheohar" },
+  {
+    value: "GEC_West_Champaran",
+    label: "Government Engineering College, West Champaran",
+  },
+  {
+    value: "GEC_Aurangabad",
+    label: "Government Engineering College, Aurangabad",
+  },
+  { value: "GEC_Kaimur", label: "Government Engineering College, Kaimur" },
+  {
+    value: "GEC_Gopalganj",
+    label: "Government Engineering College, Gopalganj",
+  },
+  { value: "GEC_Siwan", label: "Government Engineering College, Siwan" },
+  { value: "GEC_Arwal", label: "Government Engineering College, Arwal" },
+  {
+    value: "GEC_Jehanabad",
+    label: "Government Engineering College, Jehanabad",
+  },
+  { value: "GEC_Khagaria", label: "Government Engineering College, Khagaria" },
+  { value: "GEC_Bhojpur", label: "Government Engineering College, Bhojpur" },
+  { value: "GEC_Buxar", label: "Government Engineering College, Buxar" },
+  {
+    value: "GEC_Lakhisarai",
+    label: "Government Engineering College, Lakhisarai",
+  },
+  {
+    value: "GEC_Samastipur",
+    label: "Government Engineering College, Samastipur",
+  },
+  {
+    value: "GEC_Sheikhpura",
+    label: "Government Engineering College, Sheikhpura",
+  },
+];
+
 const StudentForm = () => {
   const [formData, setFormData] = useState({
     fullName: "",
-    rollNumber: "",
+    registrationNumber: "",
     email: "",
     phone: "",
+    gender: "",
+    dob: "",
     branch: "",
     collegeName: "",
     batch: "",
@@ -37,6 +108,13 @@ const StudentForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // Strict Aadhar Validation: Only digits, max 12 chars
+    if (name === "aadharNumber") {
+      if (!/^\d*$/.test(value)) return; // Ignore non-digits
+      if (value.length > 12) return; // Ignore if more than 12
+    }
+
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -64,9 +142,11 @@ const StudentForm = () => {
 
       setFormData({
         fullName: "",
-        rollNumber: "",
+        registrationNumber: "",
         email: "",
         phone: "",
+        gender: "",
+        dob: "",
         branch: "",
         collegeName: "",
         batch: "",
@@ -144,13 +224,13 @@ const StudentForm = () => {
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 uppercase font-semibold">
-                    Roll Number
+                    Roll / Registration No
                   </p>
                   <p className="text-lg font-medium text-gray-900">
-                    {submittedStudent.rollNumber}
+                    {submittedStudent.registrationNumber ||
+                      submittedStudent.rollNumber}
                   </p>
                 </div>
-
                 <div>
                   <p className="text-xs text-gray-500 uppercase font-semibold">
                     Branch
@@ -251,12 +331,12 @@ const StudentForm = () => {
                   placeholder="Enter your name"
                 />
                 <Input
-                  label="Roll Number"
-                  name="rollNumber"
-                  value={formData.rollNumber}
+                  label="Registration Number"
+                  name="registrationNumber"
+                  value={formData.registrationNumber}
                   onChange={handleChange}
                   required
-                  placeholder="Enter you Roll No."
+                  placeholder="Enter your Registration No."
                 />
                 <Input
                   label="Email Address"
@@ -265,7 +345,7 @@ const StudentForm = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  placeholder="Enter you Email Id"
+                  placeholder="Enter your Email Id"
                 />
                 <Input
                   label="Phone Number"
@@ -274,7 +354,27 @@ const StudentForm = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   required
-                  placeholder="Enter you Contact No."
+                  placeholder="Enter your Contact No."
+                />
+                <Select
+                  label="Gender"
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}
+                  required
+                  options={[
+                    { value: "Male", label: "Male" },
+                    { value: "Female", label: "Female" },
+                    { value: "Other", label: "Other" },
+                  ]}
+                />
+                <Input
+                  label="Date of Birth"
+                  type="date"
+                  name="dob"
+                  value={formData.dob}
+                  onChange={handleChange}
+                  required
                 />
                 <Input
                   label="Aadhar Number"
@@ -283,6 +383,8 @@ const StudentForm = () => {
                   onChange={handleChange}
                   required
                   placeholder="Enter 12-digit Aadhar No."
+                  minLength={12}
+                  maxLength={12}
                 />
               </div>
             </div>
@@ -302,13 +404,14 @@ const StudentForm = () => {
                   required
                   placeholder="Enter you Branch"
                 />
-                <Input
+                <Select
                   label="College Name"
                   name="collegeName"
                   value={formData.collegeName}
                   onChange={handleChange}
                   required
-                  placeholder="Enter your College"
+                  options={BIHAR_ENGINEERING_COLLEGES}
+                  placeholder="Select College"
                 />
                 <Input
                   label="Batch"

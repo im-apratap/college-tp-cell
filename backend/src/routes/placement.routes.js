@@ -7,6 +7,6 @@ import {
 const router = Router();
 
 router.route("/submit").post(submitProfile);
-router.route("/:rollNumber").get(getProfile);
+router.route("/:registrationNumber").get(getProfile);
 
 export default router;

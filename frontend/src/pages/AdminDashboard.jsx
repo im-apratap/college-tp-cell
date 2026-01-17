@@ -105,7 +105,7 @@ const AdminDashboard = () => {
     return (
       student.uniqueId?.toLowerCase().includes(term) ||
       student.fullName?.toLowerCase().includes(term) ||
-      student.rollNumber?.toLowerCase().includes(term) ||
+      student.registrationNumber?.toLowerCase().includes(term) ||
       student.aadharNumber?.toLowerCase().includes(term)
     );
   });
@@ -172,7 +172,7 @@ const AdminDashboard = () => {
               <input
                 type="text"
                 className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md p-3"
-                placeholder="Search by Unique ID, Name, Roll No, or Aadhar..."
+                placeholder="Search by Unique ID, Name, Registration No, or Aadhar..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -275,7 +275,9 @@ const AdminDashboard = () => {
                                       {student.phone}
                                     </div>
                                     <div className="text-xs text-gray-400">
-                                      Roll: {student.rollNumber}
+                                      Reg No:{" "}
+                                      {student.registrationNumber ||
+                                        student.rollNumber}
                                     </div>
                                   </div>
                                 </div>
@@ -403,10 +405,11 @@ const AdminDashboard = () => {
                 </div>
                 <div className="mb-3">
                   <p className="text-xs text-gray-500 uppercase font-semibold">
-                    Roll Number
+                    Registration Number
                   </p>
                   <p className="text-md text-gray-800">
-                    {scannedStudent.rollNumber}
+                    {scannedStudent.registrationNumber ||
+                      scannedStudent.rollNumber}
                   </p>
                 </div>
                 <div className="mb-1">

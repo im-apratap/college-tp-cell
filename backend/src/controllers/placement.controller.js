@@ -8,9 +8,11 @@ const submitProfile = asyncHandler(async (req, res) => {
   try {
     const {
       fullName,
-      rollNumber,
+      registrationNumber,
       email,
       phone,
+      gender,
+      dob,
       branch,
       collegeName,
       batch,
@@ -28,9 +30,11 @@ const submitProfile = asyncHandler(async (req, res) => {
     if (
       [
         fullName,
-        rollNumber,
+        registrationNumber,
         email,
         phone,
+        gender,
+        dob,
         collegeName,
         branch,
         batch,
@@ -48,13 +52,16 @@ const submitProfile = asyncHandler(async (req, res) => {
 
     // Check if profile already exists
     let profile = await StudentProfile.findOne({
-      $or: [{ rollNumber }, { email }, { aadharNumber }],
+      $or: [{ registrationNumber }, { email }, { aadharNumber }],
     });
 
     if (profile) {
       // Update existing profile
       profile.fullName = fullName;
+      profile.email = email;
       profile.phone = phone;
+      profile.gender = gender;
+      profile.dob = dob;
       profile.branch = branch;
       profile.collegeName = collegeName;
       profile.batch = batch;
@@ -81,9 +88,13 @@ const submitProfile = asyncHandler(async (req, res) => {
     profile = await StudentProfile.create({
       uniqueId,
       fullName,
-      rollNumber,
+      uniqueId,
+      fullName,
+      registrationNumber,
       email,
       phone,
+      gender,
+      dob,
       branch,
       collegeName,
       batch,
@@ -126,15 +137,15 @@ const submitProfile = asyncHandler(async (req, res) => {
   }
 });
 
-// Get Profile by Roll Number
+// Get Profile by Registration Number
 const getProfile = asyncHandler(async (req, res) => {
-  const { rollNumber } = req.params;
+  const { registrationNumber } = req.params;
 
-  if (!rollNumber) {
-    throw new ApiError(400, "Roll number is required");
+  if (!registrationNumber) {
+    throw new ApiError(400, "Registration number is required");
   }
 
-  const profile = await StudentProfile.findOne({ rollNumber });
+  const profile = await StudentProfile.findOne({ registrationNumber });
 
   if (!profile) {
     throw new ApiError(404, "Student profile not found");
