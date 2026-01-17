@@ -4,7 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Button from "../components/Button";
-import { LogOut, FileText, Search, Trash2, X, QrCode } from "lucide-react";
+import {
+  LogOut,
+  FileText,
+  Search,
+  Trash2,
+  X,
+  QrCode,
+  CheckCircle,
+} from "lucide-react";
 import { Scanner } from "@yudiel/react-qr-scanner";
 
 const AdminDashboard = () => {
@@ -15,6 +23,7 @@ const AdminDashboard = () => {
   const [studentToDelete, setStudentToDelete] = useState(null);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [scanning, setScanning] = useState(false);
+  const [scannedStudent, setScannedStudent] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -103,9 +112,20 @@ const AdminDashboard = () => {
 
   const handleScan = (detectedCodes) => {
     if (detectedCodes && detectedCodes.length > 0) {
-      setSearchTerm(detectedCodes[0].rawValue);
-      setScanning(false);
-      toast.success("QR Code scanned successfully!");
+      const scannedId = detectedCodes[0].rawValue;
+      const foundStudent = students.find(
+        (s) => s.uniqueId?.toLowerCase() === scannedId.toLowerCase()
+      );
+
+      if (foundStudent) {
+        setScannedStudent(foundStudent);
+        setScanning(false);
+        toast.success("Student found!");
+      } else {
+        toast.error(`No student found with ID: ${scannedId}`);
+        // Optionally keep scanning or close
+        setScanning(false);
+      }
     }
   };
 
@@ -339,6 +359,79 @@ const AdminDashboard = () => {
             <p className="mt-4 text-center text-sm text-gray-500">
               Align the QR code within the frame to scan.
             </p>
+          </div>
+        </div>
+      )}
+
+      {/* Scanned Student Modal */}
+      {scannedStudent && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg p-6 max-w-sm w-full relative shadow-xl">
+            <button
+              onClick={() => setScannedStudent(null)}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+            >
+              <X className="h-6 w-6" />
+            </button>
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+                <CheckCircle className="h-10 w-10 text-green-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">
+                Student Verified
+              </h3>
+              <p className="text-sm text-gray-500 mb-6">
+                Student details found in the database.
+              </p>
+
+              <div className="bg-gray-50 rounded-lg p-4 text-left border border-gray-200">
+                <div className="mb-3">
+                  <p className="text-xs text-gray-500 uppercase font-semibold">
+                    Full Name
+                  </p>
+                  <p className="text-lg font-medium text-gray-900">
+                    {scannedStudent.fullName}
+                  </p>
+                </div>
+                <div className="mb-3">
+                  <p className="text-xs text-gray-500 uppercase font-semibold">
+                    Unique ID
+                  </p>
+                  <p className="text-md font-mono font-bold text-blue-600">
+                    {scannedStudent.uniqueId}
+                  </p>
+                </div>
+                <div className="mb-3">
+                  <p className="text-xs text-gray-500 uppercase font-semibold">
+                    Roll Number
+                  </p>
+                  <p className="text-md text-gray-800">
+                    {scannedStudent.rollNumber}
+                  </p>
+                </div>
+                <div className="mb-1">
+                  <p className="text-xs text-gray-500 uppercase font-semibold">
+                    Branch & Batch
+                  </p>
+                  <p className="text-sm text-gray-800">
+                    {scannedStudent.branch} ({scannedStudent.batch})
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <Button
+                  variant="primary"
+                  className="w-full justify-center"
+                  onClick={() => {
+                    setSearchTerm(scannedStudent.uniqueId);
+                    setScannedStudent(null);
+                  }}
+                >
+                  View in Dashboard
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       )}

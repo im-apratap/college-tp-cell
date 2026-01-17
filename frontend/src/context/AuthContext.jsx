@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
 const AuthContext = createContext(null);
@@ -28,9 +29,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const location = useLocation();
+
   useEffect(() => {
-    checkAuth();
-  }, []);
+    // Only check auth if accessing admin routes
+    if (
+      location.pathname.startsWith("/admin") &&
+      location.pathname !== "/admin/login"
+    ) {
+      checkAuth();
+    } else {
+      setIsLoading(false);
+    }
+  }, [location.pathname]);
 
   const login = (userData) => {
     setUser(userData);

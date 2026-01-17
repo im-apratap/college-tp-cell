@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -30,7 +31,9 @@ const StudentForm = () => {
   });
 
   const [loading, setLoading] = useState(false);
+
   const [submittedStudent, setSubmittedStudent] = useState(null);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -87,64 +90,117 @@ const StudentForm = () => {
   if (submittedStudent) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-8 text-center print-area border-2 border-dashed border-gray-200">
-          <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4 no-print">
-            <CheckCircle className="h-6 w-6 text-green-600" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2 no-print">
-            Submission Successful!
-          </h2>
-          <p className="text-gray-600 mb-6 no-print">
-            Your application has been received. Please save your Unique ID and
-            Barcode.
-          </p>
-
-          <div className="text-center mb-4 hidden print:block">
-            <h1 className="text-xl font-bold">
+        <div className="max-w-xl w-full bg-white shadow-2xl rounded-2xl overflow-hidden print-area">
+          {/* Header Gradient */}
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-center text-white relative">
+            <div className="absolute top-4 right-4 print:hidden">
+              <CheckCircle className="h-8 w-8 text-green-400 bg-white rounded-full" />
+            </div>
+            <div className="flex justify-center mb-3">
+              <GraduationCap className="h-12 w-12 text-white opacity-90" />
+            </div>
+            <h1 className="text-2xl font-bold uppercase tracking-wider">
               Nalanda College of Engineering
             </h1>
-            <p className="text-sm text-gray-500">Placement Drive Admit Card</p>
-          </div>
-
-          <div className="bg-gray-100 p-4 rounded-md mb-6 print:bg-white print:border print:border-gray-300">
-            <p className="text-sm text-gray-500 uppercase tracking-wide font-semibold mb-1">
-              Unique ID
-            </p>
-            <p className="text-xl font-mono font-bold text-blue-600">
-              {submittedStudent.uniqueId}
-            </p>
-            <p className="mt-2 text-md font-medium text-gray-800">
-              {submittedStudent.fullName}
-            </p>
-            <p className="text-sm text-gray-500 text-left mt-2">
-              <span className="font-semibold">Roll No:</span>{" "}
-              {submittedStudent.rollNumber}
-            </p>
-            <p className="text-sm text-gray-500 text-left">
-              <span className="font-semibold">Branch:</span>{" "}
-              {submittedStudent.branch}
+            <p className="text-sm font-medium opacity-80 mt-1">
+              Placement Drive Admit Card
             </p>
           </div>
 
-          <div className="flex justify-center mb-6">
-            <QRCode value={submittedStudent.uniqueId} size={128} />
-          </div>
+          <div className="p-8">
+            <div className="text-center mb-8 no-print">
+              <h2 className="text-xl font-bold text-gray-900">
+                Registration Successful!
+              </h2>
+              <p className="text-gray-500 mt-1">
+                Please save this Admit Card. It contains your Unique ID required
+                for entry.
+              </p>
+            </div>
 
-          <div className="flex flex-col gap-3 no-print">
-            <Button
-              variant="outline"
-              onClick={() => window.print()}
-              className="w-full flex items-center justify-center gap-2"
-            >
-              Print Receipt
-            </Button>
-            <Button
-              variant="primary"
-              onClick={() => setSubmittedStudent(null)}
-              className="w-full"
-            >
-              Submit Another Response
-            </Button>
+            {/* Student Details Card */}
+            <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 bg-gray-50 print:border-gray-800 relative">
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-white px-3 text-sm font-bold text-gray-500 uppercase tracking-widest border border-gray-200 rounded-full shadow-sm">
+                Candidate Details
+              </div>
+
+              <div className="grid grid-cols-2 gap-6 mt-2 text-left">
+                <div className="col-span-2 text-center pb-4 border-b border-gray-200">
+                  <p className="text-xs text-gray-500 uppercase font-bold tracking-wide">
+                    Unique Candidate ID
+                  </p>
+                  <p className="text-3xl font-mono font-black text-blue-700 mt-1 tracking-tight">
+                    {submittedStudent.uniqueId}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs text-gray-500 uppercase font-semibold">
+                    Full Name
+                  </p>
+                  <p className="text-lg font-bold text-gray-900">
+                    {submittedStudent.fullName}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 uppercase font-semibold">
+                    Roll Number
+                  </p>
+                  <p className="text-lg font-medium text-gray-900">
+                    {submittedStudent.rollNumber}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs text-gray-500 uppercase font-semibold">
+                    Branch
+                  </p>
+                  <p className="text-base font-medium text-gray-800">
+                    {submittedStudent.branch}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 uppercase font-semibold">
+                    Batch
+                  </p>
+                  <p className="text-base font-medium text-gray-800">
+                    {submittedStudent.batch}
+                  </p>
+                </div>
+
+                <div className="col-span-2 pt-4 border-t border-gray-200 flex flex-col items-center justify-center">
+                  <div className="bg-white p-2 rounded-lg shadow-sm border border-gray-200 inline-block">
+                    <QRCode
+                      value={submittedStudent.uniqueId}
+                      size={128}
+                      level={"H"}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-400 mt-2 font-mono">
+                    Scan to Verify
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 mt-8 no-print">
+              <Button
+                variant="outline"
+                onClick={() => window.print()}
+                className="flex-1 flex items-center justify-center gap-2 py-3"
+              >
+                <Send className="h-4 w-4 transform rotate-180" /> Print / Save
+                PDF
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => setSubmittedStudent(null)}
+                className="flex-1 py-3"
+              >
+                Submit Another
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -154,13 +210,19 @@ const StudentForm = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
-        <div className="bg-white py-8 px-6 shadow rounded-lg sm:px-10">
+        <div className="bg-white py-8 px-6 shadow rounded-lg sm:px-10 relative">
           <div className="mb-8 text-center">
             <img
               src="/nce-logo.png"
               alt="nce-logo"
               className="mx-auto h-20 w-20 text-blue-600"
             />
+            <button
+              onClick={() => navigate("/admin/login")}
+              className="absolute top-4 right-4 text-xs font-medium text-blue-600 hover:text-blue-800 border border-blue-200 rounded-full px-3 py-1 hover:bg-blue-50 transition-colors"
+            >
+              Admin Login
+            </button>
             <h2 className="mt-2 text-3xl font-extrabold text-gray-900">
               Nalanda College of Engineering
             </h2>
