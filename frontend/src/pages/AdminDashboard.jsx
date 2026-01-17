@@ -12,6 +12,7 @@ import {
   X,
   QrCode,
   CheckCircle,
+  Eye,
 } from "lucide-react";
 import { Scanner } from "@yudiel/react-qr-scanner";
 
@@ -24,6 +25,8 @@ const AdminDashboard = () => {
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [scanning, setScanning] = useState(false);
   const [scannedStudent, setScannedStudent] = useState(null);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [studentToView, setStudentToView] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,7 +39,7 @@ const AdminDashboard = () => {
         `${import.meta.env.VITE_API_BASE_URL}/admin/submissions`,
         {
           withCredentials: true,
-        }
+        },
       );
       setStudents(response.data.data);
     } catch (error) {
@@ -57,7 +60,7 @@ const AdminDashboard = () => {
       await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/admin/logout`,
         {},
-        { withCredentials: true }
+        { withCredentials: true },
       );
       localStorage.removeItem("isAdminLoggedIn");
       localStorage.removeItem("adminUser");
@@ -86,7 +89,7 @@ const AdminDashboard = () => {
         `${import.meta.env.VITE_API_BASE_URL}/admin/submissions/${
           studentToDelete._id
         }`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       setStudents(students.filter((s) => s._id !== studentToDelete._id));
@@ -114,7 +117,7 @@ const AdminDashboard = () => {
     if (detectedCodes && detectedCodes.length > 0) {
       const scannedId = detectedCodes[0].rawValue;
       const foundStudent = students.find(
-        (s) => s.uniqueId?.toLowerCase() === scannedId.toLowerCase()
+        (s) => s.uniqueId?.toLowerCase() === scannedId.toLowerCase(),
       );
 
       if (foundStudent) {
@@ -325,6 +328,16 @@ const AdminDashboard = () => {
                                 >
                                   <Trash2 className="h-5 w-5" />
                                 </button>
+                                <button
+                                  onClick={() => {
+                                    setStudentToView(student);
+                                    setViewModalOpen(true);
+                                  }}
+                                  className="text-blue-600 hover:text-blue-900 p-2 rounded-full hover:bg-blue-50 transition-colors ml-2"
+                                  title="View Details"
+                                >
+                                  <Eye className="h-5 w-5" />
+                                </button>
                               </td>
                             </tr>
                           ))
@@ -522,7 +535,288 @@ const AdminDashboard = () => {
         </div>
       )}
 
-      <ToastContainer position="top-right" autoClose={3000} />
+      {/* View Details Modal */}
+      {viewModalOpen && studentToView && (
+        <div
+          className="fixed inset-0 z-50 overflow-y-auto"
+          aria-labelledby="modal-title"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="flex min-h-screen items-center justify-center p-4 text-center">
+            <div
+              className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+              aria-hidden="true"
+              onClick={() => setViewModalOpen(false)}
+            ></div>
+
+            <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:w-full sm:max-w-2xl max-h-[90vh] flex flex-col">
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 overflow-y-auto">
+                <div className="absolute top-4 right-4">
+                  <button
+                    onClick={() => setViewModalOpen(false)}
+                    className="text-gray-400 hover:text-gray-500"
+                  >
+                    <X className="h-6 w-6" />
+                  </button>
+                </div>
+
+                <div className="sm:flex sm:items-start w-full">
+                  <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
+                    <h3
+                      className="text-xl leading-6 font-bold text-gray-900 mb-6 flex items-center gap-2"
+                      id="modal-title"
+                    >
+                      <div className="bg-blue-100 p-2 rounded-full">
+                        <FileText className="h-6 w-6 text-blue-600" />
+                      </div>
+                      Student Full Profile
+                    </h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Personal Details */}
+                      <div className="space-y-4">
+                        <h4 className="font-semibold text-gray-900 border-b pb-2">
+                          Personal Details
+                        </h4>
+
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase">
+                            Full Name
+                          </label>
+                          <p className="text-sm font-medium text-gray-900">
+                            {studentToView.fullName}
+                          </p>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase">
+                            Email
+                          </label>
+                          <p className="text-sm text-gray-900">
+                            {studentToView.email}
+                          </p>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase">
+                            Phone
+                          </label>
+                          <p className="text-sm text-gray-900">
+                            {studentToView.phone}
+                          </p>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-xs font-medium text-gray-500 uppercase">
+                              Gender
+                            </label>
+                            <p className="text-sm text-gray-900">
+                              {studentToView.gender}
+                            </p>
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-500 uppercase">
+                              Date of Birth
+                            </label>
+                            <p className="text-sm text-gray-900">
+                              {studentToView.dob
+                                ? new Date(
+                                    studentToView.dob,
+                                  ).toLocaleDateString()
+                                : "N/A"}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase">
+                            Aadhar Number
+                          </label>
+                          <p className="text-sm font-mono text-gray-900">
+                            {studentToView.aadharNumber}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Academic Details */}
+                      <div className="space-y-4">
+                        <h4 className="font-semibold text-gray-900 border-b pb-2">
+                          Academic Details
+                        </h4>
+
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase">
+                            College
+                          </label>
+                          <p className="text-sm text-gray-900">
+                            {studentToView.collegeName}
+                          </p>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-xs font-medium text-gray-500 uppercase">
+                              Branch
+                            </label>
+                            <p className="text-sm text-gray-900">
+                              {studentToView.branch}
+                            </p>
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-500 uppercase">
+                              Batch
+                            </label>
+                            <p className="text-sm text-gray-900">
+                              {studentToView.batch}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-xs font-medium text-gray-500 uppercase">
+                              Current CGPA
+                            </label>
+                            <p className="text-sm font-bold text-gray-900">
+                              {studentToView.currentCgpa}
+                            </p>
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-500 uppercase">
+                              Active Backlogs
+                            </label>
+                            <span
+                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${studentToView.activeBacklogs > 0 ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"}`}
+                            >
+                              {studentToView.activeBacklogs}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-xs font-medium text-gray-500 uppercase">
+                              10th Percentage
+                            </label>
+                            <p className="text-sm text-gray-900">
+                              {studentToView.percentage10th}%
+                            </p>
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-500 uppercase">
+                              12th Percentage
+                            </label>
+                            <p className="text-sm text-gray-900">
+                              {studentToView.percentage12th}%
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Identifiers */}
+                      <div className="space-y-4">
+                        <h4 className="font-semibold text-gray-900 border-b pb-2">
+                          Identifiers
+                        </h4>
+
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase">
+                            Unique ID
+                          </label>
+                          <p className="text-sm font-mono font-bold text-blue-600">
+                            {studentToView.uniqueId}
+                          </p>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase">
+                            Registration/Roll No
+                          </label>
+                          <p className="text-sm font-mono text-gray-900">
+                            {studentToView.registrationNumber ||
+                              studentToView.rollNumber}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Professional Links */}
+                      <div className="space-y-4">
+                        <h4 className="font-semibold text-gray-900 border-b pb-2">
+                          Links & Portfolio
+                        </h4>
+
+                        <div className="space-y-2">
+                          {studentToView.resumeLink ? (
+                            <a
+                              href={studentToView.resumeLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center text-blue-600 hover:text-blue-800 text-sm"
+                            >
+                              <FileText className="h-4 w-4 mr-2" /> View Resume
+                            </a>
+                          ) : (
+                            <p className="text-sm text-gray-400 italic">
+                              No resume provided
+                            </p>
+                          )}
+
+                          {studentToView.linkedinProfile ? (
+                            <a
+                              href={studentToView.linkedinProfile}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center text-blue-600 hover:text-blue-800 text-sm"
+                            >
+                              <span className="h-4 w-4 mr-2 flex items-center justify-center font-bold">
+                                in
+                              </span>{" "}
+                              LinkedIn Profile
+                            </a>
+                          ) : (
+                            <p className="text-sm text-gray-400 italic">
+                              No LinkedIn profile
+                            </p>
+                          )}
+
+                          {studentToView.portfolioLink ? (
+                            <a
+                              href={studentToView.portfolioLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center text-blue-600 hover:text-blue-800 text-sm"
+                            >
+                              <span className="h-4 w-4 mr-2 flex items-center justify-center">
+                                🌐
+                              </span>{" "}
+                              Portfolio Website
+                            </a>
+                          ) : (
+                            <p className="text-sm text-gray-400 italic">
+                              No portfolio link
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button
+                  type="button"
+                  onClick={() => setViewModalOpen(false)}
+                  className="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
