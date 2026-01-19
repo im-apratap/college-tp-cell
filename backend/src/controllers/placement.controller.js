@@ -57,14 +57,22 @@ const submitProfile = asyncHandler(async (req, res) => {
     }
 
     // Check if profile already exists
-    // Check if profile already exists
-    let profile = await StudentProfile.findOne({
+    const existingProfiles = await StudentProfile.find({
       $or: [
         { registrationNumber: registrationNumber?.trim().toUpperCase() },
         { email: email?.trim().toLowerCase() },
         { aadharNumber: aadharNumber?.trim() },
       ],
     });
+
+    if (existingProfiles.length > 1) {
+      throw new ApiError(
+        409,
+        "Conflicting details found. The provided Email, Registration Number, or Aadhar Number belong to different existing student profiles. Please contact the administrator.",
+      );
+    }
+
+    let profile = existingProfiles.length > 0 ? existingProfiles[0] : null;
 
     if (profile) {
       // Update existing profile
