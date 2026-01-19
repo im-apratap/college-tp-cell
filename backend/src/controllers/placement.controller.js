@@ -57,8 +57,13 @@ const submitProfile = asyncHandler(async (req, res) => {
     }
 
     // Check if profile already exists
+    // Check if profile already exists
     let profile = await StudentProfile.findOne({
-      $or: [{ registrationNumber }, { email }, { aadharNumber }],
+      $or: [
+        { registrationNumber: registrationNumber?.trim().toUpperCase() },
+        { email: email?.trim().toLowerCase() },
+        { aadharNumber: aadharNumber?.trim() },
+      ],
     });
 
     if (profile) {
@@ -95,8 +100,6 @@ const submitProfile = asyncHandler(async (req, res) => {
       "NCE-" + crypto.randomBytes(4).toString("hex").toUpperCase();
 
     profile = await StudentProfile.create({
-      uniqueId,
-      fullName,
       uniqueId,
       fullName,
       fatherName,
