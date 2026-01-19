@@ -435,7 +435,7 @@ const AdminDashboard = () => {
                                 {student.isPresent ? (
                                   <button
                                     onClick={() => handleToggleClick(student)}
-                                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mr-2 cursor-pointer hover:bg-blue-200"
+                                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 cursor-pointer hover:bg-blue-200"
                                     title="Click to mark absent"
                                   >
                                     <CheckCircle className="h-4 w-4 mr-1" />
@@ -444,12 +444,14 @@ const AdminDashboard = () => {
                                 ) : (
                                   <button
                                     onClick={() => handleToggleClick(student)}
-                                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 mr-2 cursor-pointer hover:bg-gray-200"
+                                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 cursor-pointer hover:bg-gray-200"
                                     title="Click to mark present"
                                   >
                                     Absent
                                   </button>
                                 )}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                                 <button
                                   onClick={() => handleDeleteClick(student)}
                                   className="text-red-600 hover:text-red-900 p-2 rounded-full hover:bg-red-50 transition-colors"

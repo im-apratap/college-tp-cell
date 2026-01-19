@@ -121,12 +121,25 @@ const StudentForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleDobChange = (e) => {
+    let value = e.target.value.replace(/[^0-9]/g, "");
+    if (value.length > 2) value = value.slice(0, 2) + "/" + value.slice(2);
+    if (value.length > 5) value = value.slice(0, 5) + "/" + value.slice(5);
+    if (value.length > 10) value = value.slice(0, 10);
+    setFormData((prev) => ({ ...prev, dob: value }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
+      // Convert DD/MM/YYYY to YYYY-MM-DD
+      const [day, month, year] = formData.dob.split("/");
+      const isoDate = `${year}-${month}-${day}`;
+
       const payload = {
         ...formData,
+        dob: isoDate,
         currentCgpa: formData.currentCgpa
           ? parseFloat(formData.currentCgpa)
           : null, // Allow validation to catch null if required, or handle gracefully
@@ -469,11 +482,13 @@ const StudentForm = () => {
                 />
                 <Input
                   label="Date of Birth"
-                  type="date"
+                  type="text"
                   name="dob"
                   value={formData.dob}
-                  onChange={handleChange}
+                  onChange={handleDobChange}
                   required
+                  placeholder="DD/MM/YYYY"
+                  maxLength={10}
                 />
                 <Input
                   label="Aadhar Number"

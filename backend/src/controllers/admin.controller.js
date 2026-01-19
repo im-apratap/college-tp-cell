@@ -151,10 +151,10 @@ const verifyStudentProfile = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Student not found");
   }
 
-  // Toggle or set to true (Requirement says "tick to that", implying setting to true)
+  // Toggle or set to true
   // If status is provided in body, use it. Otherwise default to true (for QR scans).
-  if (req.body.status !== undefined) {
-    student.isPresent = req.body.status;
+  if (req.body.status === false) {
+    student.isPresent = false;
   } else {
     student.isPresent = true;
   }
