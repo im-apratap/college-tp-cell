@@ -125,6 +125,10 @@ const studentProfileSchema = new Schema(
       type: String,
       trim: true,
     },
+    isPresent: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
@@ -133,5 +137,5 @@ const studentProfileSchema = new Schema(
 
 export const StudentProfile = mongoose.model(
   "StudentProfile",
-  studentProfileSchema
+  studentProfileSchema,
 );

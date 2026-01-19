@@ -13,7 +13,7 @@ const generateAccessLink = async (userId) => {
   } catch (error) {
     throw new ApiError(
       500,
-      "Something went wrong while generating access token"
+      "Something went wrong while generating access token",
     );
   }
 };
@@ -91,8 +91,8 @@ const loginAdmin = asyncHandler(async (req, res) => {
           user: loggedInUser,
           accessToken,
         },
-        "Admin logged In Successfully"
-      )
+        "Admin logged In Successfully",
+      ),
     );
 });
 
@@ -135,6 +135,37 @@ const deleteStudentProfile = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Student profile deleted successfully"));
 });
 
+const verifyStudentProfile = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    throw new ApiError(400, "Student ID is required");
+  }
+
+  console.log("Verify request for ID:", id);
+  console.log("Request Body:", req.body);
+
+  const student = await StudentProfile.findById(id);
+
+  if (!student) {
+    throw new ApiError(404, "Student not found");
+  }
+
+  // Toggle or set to true (Requirement says "tick to that", implying setting to true)
+  // If status is provided in body, use it. Otherwise default to true (for QR scans).
+  if (req.body.status !== undefined) {
+    student.isPresent = req.body.status;
+  } else {
+    student.isPresent = true;
+  }
+
+  await student.save();
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, student, "Student marked as present"));
+});
+
 const getCurrentAdmin = asyncHandler(async (req, res) => {
   return res
     .status(200)
@@ -148,4 +179,5 @@ export {
   getAllStudentProfiles,
   deleteStudentProfile,
   getCurrentAdmin,
+  verifyStudentProfile,
 };

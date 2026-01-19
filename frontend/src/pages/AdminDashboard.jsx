@@ -15,6 +15,7 @@ import {
   Eye,
 } from "lucide-react";
 import { Scanner } from "@yudiel/react-qr-scanner";
+import * as XLSX from "xlsx";
 
 const AdminDashboard = () => {
   const [students, setStudents] = useState([]);
@@ -27,6 +28,8 @@ const AdminDashboard = () => {
   const [scannedStudent, setScannedStudent] = useState(null);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [studentToView, setStudentToView] = useState(null);
+  const [toggleModalOpen, setToggleModalOpen] = useState(false);
+  const [studentToToggle, setStudentToToggle] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -102,6 +105,77 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleExportExcel = () => {
+    if (students.length === 0) {
+      toast.error("No data to export");
+      return;
+    }
+
+    const exportData = students.map((student) => ({
+      "Unique ID": student.uniqueId,
+      "Full Name": student.fullName,
+      "Father's Name": student.fatherName,
+      "Registration No": student.registrationNumber,
+      Email: student.email,
+      "Father's Contact": student.fullContactNumber,
+      "WhatsApp No": student.whatsappContact,
+      "Alternate No": student.alternateContact,
+      Gender: student.gender,
+      DOB: student.dob ? new Date(student.dob).toLocaleDateString("en-GB") : "",
+      "Aadhar No": student.aadharNumber,
+      College: student.collegeName,
+      Branch: student.branch,
+      Batch: student.batch,
+      "Current CGPA": student.currentCgpa,
+      "Active Backlogs": student.activeBacklogs,
+      "10th %": student.percentage10th,
+      "12th %": student.percentage12th,
+      "Resume Link": student.resumeLink || "N/A",
+      "LinkedIn Profile": student.linkedinProfile || "N/A",
+      "Portfolio Link": student.portfolioLink || "N/A",
+      "Present?": student.isPresent ? "Yes" : "No",
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Students");
+
+    const date = new Date().toISOString().split("T")[0];
+    XLSX.writeFile(workbook, `Student_Submissions_${date}.xlsx`);
+    toast.success("Excel file downloaded successfully");
+  };
+
+  const handleToggleClick = (student) => {
+    setStudentToToggle(student);
+    setToggleModalOpen(true);
+  };
+
+  const confirmToggle = async () => {
+    if (!studentToToggle) return;
+
+    try {
+      const newStatus = !studentToToggle.isPresent;
+      await axios.patch(
+        `${import.meta.env.VITE_API_BASE_URL}/admin/verify/${studentToToggle._id}`,
+        { status: newStatus },
+        { withCredentials: true },
+      );
+
+      setStudents((prev) =>
+        prev.map((s) =>
+          s._id === studentToToggle._id ? { ...s, isPresent: newStatus } : s,
+        ),
+      );
+      toast.success(`Marked as ${newStatus ? "Present" : "Absent"}`);
+    } catch (error) {
+      console.error("Failed to toggle attendance:", error);
+      toast.error("Failed to update attendance");
+    } finally {
+      setToggleModalOpen(false);
+      setStudentToToggle(null);
+    }
+  };
+
   // Filter students based on search
   const filteredStudents = students.filter((student) => {
     const term = searchTerm.toLowerCase();
@@ -113,7 +187,7 @@ const AdminDashboard = () => {
     );
   });
 
-  const handleScan = (detectedCodes) => {
+  const handleScan = async (detectedCodes) => {
     if (detectedCodes && detectedCodes.length > 0) {
       const scannedId = detectedCodes[0].rawValue;
       const foundStudent = students.find(
@@ -124,6 +198,31 @@ const AdminDashboard = () => {
         setScannedStudent(foundStudent);
         setScanning(false);
         toast.success("Student found!");
+
+        // Mark as present
+        if (!foundStudent.isPresent) {
+          try {
+            await axios.patch(
+              `${import.meta.env.VITE_API_BASE_URL}/admin/verify/${
+                foundStudent._id
+              }`,
+              {},
+              { withCredentials: true },
+            );
+            // Update local state
+            setStudents((prev) =>
+              prev.map((s) =>
+                s._id === foundStudent._id ? { ...s, isPresent: true } : s,
+              ),
+            );
+            toast.success("Marked as Present ✅");
+          } catch (error) {
+            console.error(error);
+            toast.error("Failed to mark attendance");
+          }
+        } else {
+          toast.info("Already marked present");
+        }
       } else {
         toast.error(`No student found with ID: ${scannedId}`);
         // Optionally keep scanning or close
@@ -188,6 +287,14 @@ const AdminDashboard = () => {
               <QrCode className="h-5 w-5" />
               Scan QR
             </Button>
+            <Button
+              variant="primary"
+              onClick={handleExportExcel}
+              className="flex items-center gap-2"
+            >
+              <FileText className="h-5 w-5" />
+              Export to Excel
+            </Button>
           </div>
 
           {loading ? (
@@ -238,6 +345,12 @@ const AdminDashboard = () => {
                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                           >
                             Current CGPA
+                          </th>
+                          <th
+                            scope="col"
+                            className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                          >
+                            Status
                           </th>
                           <th
                             scope="col"
@@ -319,6 +432,24 @@ const AdminDashboard = () => {
                                 </span>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                {student.isPresent ? (
+                                  <button
+                                    onClick={() => handleToggleClick(student)}
+                                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mr-2 cursor-pointer hover:bg-blue-200"
+                                    title="Click to mark absent"
+                                  >
+                                    <CheckCircle className="h-4 w-4 mr-1" />
+                                    Present
+                                  </button>
+                                ) : (
+                                  <button
+                                    onClick={() => handleToggleClick(student)}
+                                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 mr-2 cursor-pointer hover:bg-gray-200"
+                                    title="Click to mark present"
+                                  >
+                                    Absent
+                                  </button>
+                                )}
                                 <button
                                   onClick={() => handleDeleteClick(student)}
                                   className="text-red-600 hover:text-red-900 p-2 rounded-full hover:bg-red-50 transition-colors"
@@ -349,6 +480,44 @@ const AdminDashboard = () => {
           )}
         </div>
       </div>
+      {/* Toggle Confirmation Modal */}
+      {toggleModalOpen && studentToToggle && (
+        <div className="fixed inset-0 bg-black/75 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg p-6 max-w-sm w-full">
+            <h3 className="text-lg font-bold text-gray-900 mb-2">
+              Confirm Attendance Change
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to mark{" "}
+              <span className="font-semibold">{studentToToggle.fullName}</span>{" "}
+              as{" "}
+              <span className="font-bold">
+                {studentToToggle.isPresent ? "ABSENT" : "PRESENT"}
+              </span>
+              ?
+            </p>
+            <div className="flex justify-end space-x-3">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setToggleModalOpen(false);
+                  setStudentToToggle(null);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="primary"
+                onClick={confirmToggle}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                Yes, Change
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Scanner Modal */}
       {scanning && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 flex items-center justify-center p-4">
