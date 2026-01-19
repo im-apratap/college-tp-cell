@@ -72,7 +72,7 @@ const AdminDashboard = () => {
   };
 
   const handleDeleteClick = (student) => {
-    console.log("Delete clicked for:", student);
+    // console.log("Delete clicked for:", student);
     setStudentToDelete(student);
     setDeleteModalOpen(true);
     setDeleteConfirmation("");
@@ -275,12 +275,10 @@ const AdminDashboard = () => {
                                       {student.email}
                                     </div>
                                     <div className="text-sm text-gray-500">
-                                      {student.phone}
+                                      {student.fullContactNumber}
                                     </div>
                                     <div className="text-xs text-gray-400">
-                                      Reg No:{" "}
-                                      {student.registrationNumber ||
-                                        student.rollNumber}
+                                      Reg No: {student.registrationNumber}
                                     </div>
                                   </div>
                                 </div>
@@ -421,8 +419,7 @@ const AdminDashboard = () => {
                     Registration Number
                   </p>
                   <p className="text-md text-gray-800">
-                    {scannedStudent.registrationNumber ||
-                      scannedStudent.rollNumber}
+                    {scannedStudent.registrationNumber}
                   </p>
                 </div>
                 <div className="mb-1">
@@ -600,10 +597,37 @@ const AdminDashboard = () => {
 
                         <div>
                           <label className="block text-xs font-medium text-gray-500 uppercase">
-                            Phone
+                            Father's Name
                           </label>
                           <p className="text-sm text-gray-900">
-                            {studentToView.phone}
+                            {studentToView.fatherName}
+                          </p>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase">
+                            Father's Contact
+                          </label>
+                          <p className="text-sm text-gray-900">
+                            {studentToView.fullContactNumber}
+                          </p>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase">
+                            WhatsApp Number
+                          </label>
+                          <p className="text-sm text-gray-900">
+                            {studentToView.whatsappContact}
+                          </p>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase">
+                            Alternate Number
+                          </label>
+                          <p className="text-sm text-gray-900">
+                            {studentToView.alternateContact}
                           </p>
                         </div>
 
@@ -732,11 +756,10 @@ const AdminDashboard = () => {
 
                         <div>
                           <label className="block text-xs font-medium text-gray-500 uppercase">
-                            Registration/Roll No
+                            Registration No
                           </label>
                           <p className="text-sm font-mono text-gray-900">
-                            {studentToView.registrationNumber ||
-                              studentToView.rollNumber}
+                            {studentToView.registrationNumber}
                           </p>
                         </div>
                       </div>

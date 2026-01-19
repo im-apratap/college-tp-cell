@@ -29,7 +29,12 @@ const studentProfileSchema = new Schema(
       lowercase: true,
       trim: true,
     },
-    phone: {
+    whatsappContact: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    alternateContact: {
       type: String,
       required: true,
       trim: true,
@@ -42,6 +47,17 @@ const studentProfileSchema = new Schema(
     dob: {
       type: Date,
       required: true,
+    },
+    fatherName: {
+      type: String,
+      required: true,
+      trim: true,
+      index: true,
+    },
+    fullContactNumber: {
+      type: String,
+      required: true,
+      trim: true,
     },
 
     // Academic Details
@@ -112,7 +128,7 @@ const studentProfileSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export const StudentProfile = mongoose.model(

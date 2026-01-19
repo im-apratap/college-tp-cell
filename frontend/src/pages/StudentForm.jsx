@@ -86,9 +86,12 @@ const BIHAR_ENGINEERING_COLLEGES = [
 const StudentForm = () => {
   const [formData, setFormData] = useState({
     fullName: "",
+    fatherName: "", // Added
     registrationNumber: "",
     email: "",
-    phone: "",
+    fullContactNumber: "", // Renamed/Added
+    whatsappContact: "", // Added
+    alternateContact: "", // Added
     gender: "",
     dob: "",
     branch: "",
@@ -142,9 +145,12 @@ const StudentForm = () => {
 
       setFormData({
         fullName: "",
+        fatherName: "",
         registrationNumber: "",
         email: "",
-        phone: "",
+        fullContactNumber: "",
+        whatsappContact: "",
+        alternateContact: "",
         gender: "",
         dob: "",
         branch: "",
@@ -222,13 +228,22 @@ const StudentForm = () => {
                     {submittedStudent.fullName}
                   </p>
                 </div>
+
+                <div>
+                  <p className="text-xs text-gray-500 uppercase font-semibold">
+                    Father's Name
+                  </p>
+                  <p className="text-lg font-bold text-gray-900">
+                    {submittedStudent.fatherName}
+                  </p>
+                </div>
+
                 <div className="flex flex-col gap-1">
                   <p className="text-xs text-gray-500 uppercase font-semibold">
                     Registration No
                   </p>
                   <p className="text-md font-medium text-gray-900 border-b border-gray-100 pb-1">
-                    {submittedStudent.registrationNumber ||
-                      submittedStudent.rollNumber}
+                    {submittedStudent.registrationNumber}
                   </p>
                 </div>
 
@@ -237,7 +252,34 @@ const StudentForm = () => {
                     Date of Birth
                   </p>
                   <p className="text-md font-medium text-gray-900 border-b border-gray-100 pb-1">
-                    {new Date(submittedStudent.dob).toLocaleDateString()}
+                    {new Date(submittedStudent.dob).toLocaleDateString("en-GB")}
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <p className="text-xs text-gray-500 uppercase font-semibold">
+                    Father's Contact
+                  </p>
+                  <p className="text-md font-medium text-gray-900 border-b border-gray-100 pb-1">
+                    {submittedStudent.fullContactNumber}
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <p className="text-xs text-gray-500 uppercase font-semibold">
+                    WhatsApp No
+                  </p>
+                  <p className="text-md font-medium text-gray-900 border-b border-gray-100 pb-1">
+                    {submittedStudent.whatsappContact}
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <p className="text-xs text-gray-500 uppercase font-semibold">
+                    Alternate No
+                  </p>
+                  <p className="text-md font-medium text-gray-900 border-b border-gray-100 pb-1">
+                    {submittedStudent.alternateContact}
                   </p>
                 </div>
 
@@ -359,6 +401,7 @@ const StudentForm = () => {
                   required
                   placeholder="Enter your name"
                 />
+
                 <Input
                   label="Registration Number"
                   name="registrationNumber"
@@ -376,14 +419,41 @@ const StudentForm = () => {
                   required
                   placeholder="Enter your Email Id"
                 />
+
                 <Input
-                  label="Phone Number"
+                  label="WhatsApp Number"
                   type="tel"
-                  name="phone"
-                  value={formData.phone}
+                  name="whatsappContact"
+                  value={formData.whatsappContact}
                   onChange={handleChange}
                   required
-                  placeholder="Enter your Contact No."
+                  placeholder="Enter WhatsApp No."
+                />
+                <Input
+                  label="Alternate Number"
+                  type="tel"
+                  name="alternateContact"
+                  value={formData.alternateContact}
+                  onChange={handleChange}
+                  required
+                  placeholder="Enter Alternate No."
+                />
+                <Input
+                  label="Father's Name"
+                  name="fatherName"
+                  value={formData.fatherName}
+                  onChange={handleChange}
+                  required
+                  placeholder="Enter father's name"
+                />
+                <Input
+                  label="Father's Contact Number"
+                  type="tel"
+                  name="fullContactNumber"
+                  value={formData.fullContactNumber}
+                  onChange={handleChange}
+                  required
+                  placeholder="Enter Father's Contact No."
                 />
                 <Select
                   label="Gender"

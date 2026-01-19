@@ -8,9 +8,12 @@ const submitProfile = asyncHandler(async (req, res) => {
   try {
     const {
       fullName,
+      fatherName,
       registrationNumber,
       email,
-      phone,
+      fullContactNumber,
+      whatsappContact,
+      alternateContact,
       gender,
       dob,
       branch,
@@ -30,9 +33,12 @@ const submitProfile = asyncHandler(async (req, res) => {
     if (
       [
         fullName,
+        fatherName,
         registrationNumber,
         email,
-        phone,
+        fullContactNumber,
+        whatsappContact,
+        alternateContact,
         gender,
         dob,
         collegeName,
@@ -58,8 +64,11 @@ const submitProfile = asyncHandler(async (req, res) => {
     if (profile) {
       // Update existing profile
       profile.fullName = fullName;
+      profile.fatherName = fatherName;
       profile.email = email;
-      profile.phone = phone;
+      profile.fullContactNumber = fullContactNumber;
+      profile.whatsappContact = whatsappContact;
+      profile.alternateContact = alternateContact;
       profile.gender = gender;
       profile.dob = dob;
       profile.branch = branch;
@@ -90,9 +99,12 @@ const submitProfile = asyncHandler(async (req, res) => {
       fullName,
       uniqueId,
       fullName,
+      fatherName,
       registrationNumber,
       email,
-      phone,
+      fullContactNumber,
+      whatsappContact,
+      alternateContact,
       gender,
       dob,
       branch,
@@ -111,7 +123,7 @@ const submitProfile = asyncHandler(async (req, res) => {
     if (!profile) {
       throw new ApiError(
         500,
-        "Something went wrong while creating the profile"
+        "Something went wrong while creating the profile",
       );
     }
 
@@ -132,7 +144,7 @@ const submitProfile = asyncHandler(async (req, res) => {
     console.error("Profile Submission Error:", error);
     throw new ApiError(
       500,
-      "Something went wrong while submitting the profile. Please check your inputs."
+      "Something went wrong while submitting the profile. Please check your inputs.",
     );
   }
 });
