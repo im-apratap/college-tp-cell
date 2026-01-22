@@ -108,7 +108,47 @@ const studentProfileSchema = new Schema(
       required: true,
       trim: true,
     },
+    school10th: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    board10th: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    school10th: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    board10th: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     percentage12th: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    institute12th: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    board12th: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    institute12th: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    board12th: {
       type: String,
       required: true,
       trim: true,

@@ -23,7 +23,11 @@ const submitProfile = asyncHandler(async (req, res) => {
       activeBacklogs,
       aadharNumber,
       percentage10th,
+      school10th,
+      board10th,
       percentage12th,
+      institute12th,
+      board12th,
       resumeLink,
       linkedinProfile,
       portfolioLink,
@@ -46,7 +50,11 @@ const submitProfile = asyncHandler(async (req, res) => {
         batch,
         aadharNumber,
         percentage10th,
+        school10th,
+        board10th,
         percentage12th,
+        institute12th,
+        board12th,
       ].some((field) => typeof field === "string" && field?.trim() === "")
     ) {
       throw new ApiError(400, "All required fields must be provided");
@@ -91,7 +99,11 @@ const submitProfile = asyncHandler(async (req, res) => {
       profile.activeBacklogs = activeBacklogs || 0;
       profile.aadharNumber = aadharNumber;
       profile.percentage10th = percentage10th;
+      profile.school10th = school10th;
+      profile.board10th = board10th;
       profile.percentage12th = percentage12th;
+      profile.institute12th = institute12th;
+      profile.board12th = board12th;
       profile.resumeLink = resumeLink;
       profile.linkedinProfile = linkedinProfile;
       profile.portfolioLink = portfolioLink;
@@ -125,7 +137,11 @@ const submitProfile = asyncHandler(async (req, res) => {
       activeBacklogs: activeBacklogs || 0,
       aadharNumber,
       percentage10th,
+      school10th,
+      board10th,
       percentage12th,
+      institute12th,
+      board12th,
       resumeLink,
       linkedinProfile,
       portfolioLink,

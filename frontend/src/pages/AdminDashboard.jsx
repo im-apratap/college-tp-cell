@@ -15,7 +15,9 @@ import {
   Eye,
 } from "lucide-react";
 import { Scanner } from "@yudiel/react-qr-scanner";
+
 import * as XLSX from "xlsx";
+import { BIHAR_ENGINEERING_COLLEGES, BRANCHES } from "../utils/constants";
 
 const AdminDashboard = () => {
   const [students, setStudents] = useState([]);
@@ -129,7 +131,11 @@ const AdminDashboard = () => {
       "Current CGPA": student.currentCgpa,
       "Active Backlogs": student.activeBacklogs,
       "10th %": student.percentage10th,
-      "12th %": student.percentage12th,
+      "10th School": student.school10th || "",
+      "10th Board": student.board10th || "",
+      "12th/Diploma %": student.percentage12th,
+      "12th/Diploma Institute": student.institute12th || "",
+      "12th/Diploma Board": student.board12th || "",
       "Resume Link": student.resumeLink || "N/A",
       "LinkedIn Profile": student.linkedinProfile || "N/A",
       "Portfolio Link": student.portfolioLink || "N/A",
@@ -411,10 +417,15 @@ const AdminDashboard = () => {
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="text-sm text-gray-900">
-                                  {student.collegeName}
+                                  {BIHAR_ENGINEERING_COLLEGES.find(
+                                    (c) => c.value === student.collegeName,
+                                  )?.label || student.collegeName}
                                 </div>
                                 <div className="text-sm text-gray-500">
-                                  {student.branch} ({student.batch})
+                                  {BRANCHES.find(
+                                    (b) => b.value === student.branch,
+                                  )?.label || student.branch}{" "}
+                                  ({student.batch})
                                 </div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
@@ -819,7 +830,7 @@ const AdminDashboard = () => {
                               {studentToView.dob
                                 ? new Date(
                                     studentToView.dob,
-                                  ).toLocaleDateString()
+                                  ).toLocaleDateString("en-GB")
                                 : "N/A"}
                             </p>
                           </div>
@@ -846,7 +857,9 @@ const AdminDashboard = () => {
                             College
                           </label>
                           <p className="text-sm text-gray-900">
-                            {studentToView.collegeName}
+                            {BIHAR_ENGINEERING_COLLEGES.find(
+                              (c) => c.value === studentToView.collegeName,
+                            )?.label || studentToView.collegeName}
                           </p>
                         </div>
 
@@ -856,7 +869,9 @@ const AdminDashboard = () => {
                               Branch
                             </label>
                             <p className="text-sm text-gray-900">
-                              {studentToView.branch}
+                              {BRANCHES.find(
+                                (b) => b.value === studentToView.branch,
+                              )?.label || studentToView.branch}
                             </p>
                           </div>
                           <div>
@@ -899,14 +914,49 @@ const AdminDashboard = () => {
                               {studentToView.percentage10th}%
                             </p>
                           </div>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase">
+                            10th School Name
+                          </label>
+                          <p className="text-sm text-gray-900">
+                            {studentToView.school10th}
+                          </p>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase">
+                            10th Board Name
+                          </label>
+                          <p className="text-sm text-gray-900">
+                            {studentToView.board10th}
+                          </p>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
                           <div>
                             <label className="block text-xs font-medium text-gray-500 uppercase">
-                              12th Percentage
+                              12th % / Diploma CGPA
                             </label>
                             <p className="text-sm text-gray-900">
-                              {studentToView.percentage12th}%
+                              {studentToView.percentage12th}
                             </p>
                           </div>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase">
+                            12th / Diploma Institute Name
+                          </label>
+                          <p className="text-sm text-gray-900">
+                            {studentToView.institute12th}
+                          </p>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase">
+                            12th / Diploma Board Name
+                          </label>
+                          <p className="text-sm text-gray-900">
+                            {studentToView.board12th}
+                          </p>
                         </div>
                       </div>
 

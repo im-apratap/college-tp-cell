@@ -16,9 +16,7 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
-// Routes Import
-// import userRouter from "./routes/user.routes.js";
-// import adminRouter form "./routes/admin.routes.js"
+// Routes
 import placementRouter from "./routes/placement.routes.js";
 
 import adminRouter from "./routes/admin.routes.js";
