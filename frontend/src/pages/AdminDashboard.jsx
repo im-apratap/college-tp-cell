@@ -133,7 +133,7 @@ const AdminDashboard = () => {
       "10th %": student.percentage10th,
       "10th School": student.school10th || "",
       "10th Board": student.board10th || "",
-      "12th/Diploma %": student.percentage12th,
+      "12% / Diploma CGPA": student.percentage12th,
       "12th/Diploma Institute": student.institute12th || "",
       "12th/Diploma Board": student.board12th || "",
       "Resume Link": student.resumeLink || "N/A",
@@ -412,7 +412,7 @@ const AdminDashboard = () => {
                                   10th: {student.percentage10th}
                                 </div>
                                 <div className="text-sm text-gray-500">
-                                  12th: {student.percentage12th}
+                                  12% / Diploma CGPA: {student.percentage12th}
                                 </div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
