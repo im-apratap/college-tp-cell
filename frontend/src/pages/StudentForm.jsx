@@ -13,6 +13,7 @@ import {
   User,
   Briefcase,
   CheckCircle,
+  Info,
 } from "lucide-react";
 import {
   BIHAR_ENGINEERING_COLLEGES,
@@ -293,6 +294,22 @@ const StudentForm = () => {
               </div>
             </div>
 
+            {/* Instructions */}
+            <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4 flex gap-3 items-start text-left">
+              <Info className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <div className="text-sm text-blue-800">
+                <p className="font-bold mb-1">
+                  Important: Bring these documents (Original + Copies):
+                </p>
+                <ul className="list-disc pl-4 space-y-1">
+                  <li>Original Aadhar Card + 2 Photocopies</li>
+                  <li>Original 10th Marksheet + 2 Photocopies</li>
+                  <li>Original 12th/Diploma Marksheet + 2 Photocopies</li>
+                  <li>2 Copies of Resume</li>
+                </ul>
+              </div>
+            </div>
+
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 mt-8 no-print">
               <Button
@@ -564,6 +581,19 @@ const StudentForm = () => {
                     placeholder="Enter Board Name"
                   />
                 </div>
+              </div>
+            </div>
+
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6 flex gap-3 items-start">
+              <Info className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+              <div className="text-sm text-amber-800">
+                <p className="font-bold mb-1">Required Documents to Carry:</p>
+                <ul className="list-disc pl-4 space-y-1">
+                  <li>Original Aadhar Card + 2 Photocopies</li>
+                  <li>Original 10th Marksheet + 2 Photocopies</li>
+                  <li>Original 12th/Diploma Marksheet + 2 Photocopies</li>
+                  <li>2 Copies of Resume</li>
+                </ul>
               </div>
             </div>
 
