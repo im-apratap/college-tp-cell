@@ -219,6 +219,7 @@ const submitProfile = asyncHandler(async (req, res) => {
                   <li>Original Aadhar Card + 2 Photocopies</li>
                   <li>Original 10th Marksheet + 2 Photocopies</li>
                   <li>Original 12th/Diploma Marksheet + 2 Photocopies</li>
+                  <li>2 Copies of Current Btech Marksheet</li>
                   <li>2 Copies of Resume</li>
                 </ul>
             </div>
@@ -392,6 +393,7 @@ const submitProfile = asyncHandler(async (req, res) => {
                 <li>Original Aadhar Card + 2 Photocopies</li>
                 <li>Original 10th Marksheet + 2 Photocopies</li>
                 <li>Original 12th/Diploma Marksheet + 2 Photocopies</li>
+                <li>2 Copies of Current Btech Marksheet</li>
                 <li>2 Copies of Resume</li>
               </ul>
           </div>
