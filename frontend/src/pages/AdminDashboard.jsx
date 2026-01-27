@@ -36,6 +36,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     fetchSubmissions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchSubmissions = async () => {
@@ -71,7 +72,7 @@ const AdminDashboard = () => {
       localStorage.removeItem("adminUser");
       toast.success("Logged out successfully");
       navigate("/admin/login");
-    } catch (error) {
+    } catch {
       toast.error("Logout failed");
     }
   };

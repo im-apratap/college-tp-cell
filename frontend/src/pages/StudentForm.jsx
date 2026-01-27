@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -14,6 +14,8 @@ import {
   Briefcase,
   CheckCircle,
   Info,
+  Clock,
+  AlertTriangle,
 } from "lucide-react";
 import {
   BIHAR_ENGINEERING_COLLEGES,
@@ -46,7 +48,30 @@ const StudentForm = () => {
     aadharNumber: "",
   });
 
+  const [isFormOpen, setIsFormOpen] = useState(null); // null = loading, true = open, false = closed
   const [loading, setLoading] = useState(false);
+  const [formStatusMessage, setFormStatusMessage] = useState("");
+  const [deadline, setDeadline] = useState(null);
+
+  useEffect(() => {
+    const checkFormStatus = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/placement/status`,
+        );
+        setIsFormOpen(response.data.data.isOpen);
+        setFormStatusMessage(response.data.data.message);
+        setDeadline(response.data.data.deadline);
+      } catch (error) {
+        console.error("Failed to check form status", error);
+        // Fallback or assume open? Better to fail safe or show error.
+        // For now, let's assume open if check fails to avoid blocking users due to network glitches,
+        // but backend will enforce it anyway.
+        setIsFormOpen(true);
+      }
+    };
+    checkFormStatus();
+  }, []);
 
   const [submittedStudent, setSubmittedStudent] = useState(null);
   const navigate = useNavigate();
@@ -339,283 +364,330 @@ const StudentForm = () => {
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <div className="bg-white py-8 px-6 shadow rounded-lg sm:px-10 relative">
-          <div className="mb-8 text-center">
-            <img
-              src="/nce-logo.png"
-              alt="nce-logo"
-              className="mx-auto h-20 w-20 text-blue-600"
-            />
-            <button
-              onClick={() => navigate("/admin/login")}
-              className="absolute top-4 right-4 text-xs font-medium text-blue-600 hover:text-blue-800 border border-blue-200 rounded-full px-3 py-1 hover:bg-blue-50 transition-colors"
-            >
-              Admin Login
-            </button>
-            <h2 className="mt-2 text-3xl font-extrabold text-gray-900">
-              Nalanda College of Engineering
-            </h2>
-            <h3 className="mt-2 text-2xl font-extrabold text-gray-900">
-              Placement Coordination Form
-            </h3>
-            <p className="mt-2 text-sm text-gray-600 max-w-lg mx-auto">
-              Please fill in your details accurately. This information will be
-              used for upcoming placement drives.
-            </p>
-          </div>
-
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            {/* Personal Details */}
-            <div className="bg-gray-50 p-4 rounded-md border border-gray-100">
-              <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
-                <User className="h-5 w-5 text-gray-500" /> Personal Details
-              </h3>
-              <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
-                <Input
-                  label="Full Name"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  required
-                  placeholder="Enter your name"
-                />
-
-                <Input
-                  label="Registration Number"
-                  name="registrationNumber"
-                  value={formData.registrationNumber}
-                  onChange={handleChange}
-                  required
-                  placeholder="Enter your Registration No."
-                />
-                <Input
-                  label="Email Address"
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  placeholder="Enter your Email Id"
-                />
-
-                <Input
-                  label="WhatsApp Number"
-                  type="tel"
-                  name="whatsappContact"
-                  value={formData.whatsappContact}
-                  onChange={handleChange}
-                  required
-                  placeholder="Enter WhatsApp No."
-                />
-                <Input
-                  label="Alternate Number"
-                  type="tel"
-                  name="alternateContact"
-                  value={formData.alternateContact}
-                  onChange={handleChange}
-                  required
-                  placeholder="Enter Alternate No."
-                />
-                <Input
-                  label="Father's Name"
-                  name="fatherName"
-                  value={formData.fatherName}
-                  onChange={handleChange}
-                  required
-                  placeholder="Enter father's name"
-                />
-                <Input
-                  label="Father's Contact Number"
-                  type="tel"
-                  name="fullContactNumber"
-                  value={formData.fullContactNumber}
-                  onChange={handleChange}
-                  required
-                  placeholder="Enter Father's Contact No."
-                />
-                <Select
-                  label="Gender"
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}
-                  required
-                  options={[
-                    { value: "Male", label: "Male" },
-                    { value: "Female", label: "Female" },
-                    { value: "Other", label: "Other" },
-                  ]}
-                />
-                <Input
-                  label="Date of Birth"
-                  type="text"
-                  name="dob"
-                  value={formData.dob}
-                  onChange={handleDobChange}
-                  required
-                  placeholder="DD/MM/YYYY"
-                  maxLength={10}
-                />
-                <Input
-                  label="Aadhar Number"
-                  name="aadharNumber"
-                  value={formData.aadharNumber}
-                  onChange={handleChange}
-                  required
-                  placeholder="Enter 12-digit Aadhar No."
-                  minLength={12}
-                  maxLength={12}
-                />
-              </div>
-            </div>
-
-            {/* Academic Details */}
-            <div className="bg-gray-50 p-4 rounded-md border border-gray-100">
-              <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
-                <GraduationCap className="h-5 w-5 text-gray-500" /> Academic
-                Details
-              </h3>
-              <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
-                <Select
-                  label="Branch"
-                  name="branch"
-                  value={formData.branch}
-                  onChange={handleChange}
-                  required
-                  options={BRANCHES}
-                  placeholder="Select Branch"
-                />
-                <Select
-                  label="College Name"
-                  name="collegeName"
-                  value={formData.collegeName}
-                  onChange={handleChange}
-                  required
-                  options={BIHAR_ENGINEERING_COLLEGES}
-                  placeholder="Select College"
-                />
-                <Select
-                  label="Batch"
-                  name="batch"
-                  value={formData.batch}
-                  onChange={handleChange}
-                  required
-                  options={BATCHES}
-                  placeholder="Select Batch"
-                />
-                <Input
-                  label="Current CGPA"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  max="10"
-                  name="currentCgpa"
-                  value={formData.currentCgpa}
-                  onChange={handleChange}
-                  required
-                  placeholder="Enter Current CGPA (e.g. 8)"
-                />
-                <Input
-                  label="Active Backlogs"
-                  type="number"
-                  min="0"
-                  name="activeBacklogs"
-                  value={formData.activeBacklogs}
-                  onChange={handleChange}
-                  placeholder="0"
-                />
-              </div>
-            </div>
-
-            {/* Professional Details (Percentages) */}
-            <div className="bg-gray-50 p-4 rounded-md border border-gray-100">
-              <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
-                <Briefcase className="h-5 w-5 text-gray-500" /> Academic
-                Performance
-              </h3>
-              <div className="grid grid-cols-1 gap-y-6 gap-x-4">
-                <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
-                  <Input
-                    label="10th Percentage"
-                    name="percentage10th"
-                    value={formData.percentage10th}
-                    onChange={handleChange}
-                    required
-                    placeholder="Enter 10th % (e.g. 95%)"
-                  />
-                  <Input
-                    label="Enter 10th Institute Name"
-                    name="school10th"
-                    value={formData.school10th}
-                    onChange={handleChange}
-                    required
-                    placeholder="Enter School Name"
-                  />
-                  <Input
-                    label="Enter 10th Board Name"
-                    name="board10th"
-                    value={formData.board10th}
-                    onChange={handleChange}
-                    required
-                    placeholder="Enter Board Name"
-                  />
-                  <Input
-                    label="12th Percentage/ Diploma CGPA"
-                    name="percentage12th"
-                    value={formData.percentage12th}
-                    onChange={handleChange}
-                    required
-                    placeholder="Enter 12th Percentage/ Diploma CGPA"
-                  />
-                  <Input
-                    label="Enter 12th/ Diploma Institute Name"
-                    name="institute12th"
-                    value={formData.institute12th}
-                    onChange={handleChange}
-                    required
-                    placeholder="Enter Institute Name"
-                  />
-                  <Input
-                    label="Enter 12th/ Diploma Board Name"
-                    name="board12th"
-                    value={formData.board12th}
-                    onChange={handleChange}
-                    required
-                    placeholder="Enter Board Name"
-                  />
+          {isFormOpen === false ? (
+            <div className="text-center py-10">
+              <div className="flex justify-center mb-4">
+                <div className="bg-red-100 p-4 rounded-full">
+                  <Clock className="w-12 h-12 text-red-600" />
                 </div>
               </div>
-            </div>
-
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6 flex gap-3 items-start">
-              <Info className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
-              <div className="text-sm text-amber-800">
-                <p className="font-bold mb-1">Required Documents to Carry:</p>
-                <ul className="list-disc pl-4 space-y-1">
-                  <li>Original Aadhar Card + 2 Photocopies</li>
-                  <li>Original 10th Marksheet + 2 Photocopies</li>
-                  <li>Original 12th/Diploma Marksheet + 2 Photocopies</li>
-                  <li>2 Copies of Current Btech Marksheet</li>
-                  <li>2 Copies of Resume</li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="pt-4">
-              <Button
-                type="submit"
-                variant="primary"
-                className="w-full flex justify-center items-center gap-2"
-                disabled={loading}
-              >
-                {loading ? (
-                  "Submitting..."
-                ) : (
-                  <>
-                    <Send className="h-4 w-4" /> Submit Application
-                  </>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                Applications Closed
+              </h2>
+              <p className="text-gray-600 max-w-md mx-auto mb-6">
+                {formStatusMessage ||
+                  "Sorry, the application deadline has passed."}
+                {deadline && (
+                  <span className="block mt-2 font-semibold text-red-600">
+                    Deadline was:{" "}
+                    {new Date(deadline).toLocaleString("en-IN", {
+                      dateStyle: "full",
+                      timeStyle: "short",
+                    })}
+                  </span>
                 )}
-              </Button>
+              </p>
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 max-w-md mx-auto text-left flex gap-3">
+                <AlertTriangle className="h-5 w-5 text-yellow-600 flex-shrink-0" />
+                <p className="text-sm text-yellow-800">
+                  If you believe this is an error, please reach out to the
+                  placement cell immediately.
+                </p>
+              </div>
+              <button
+                onClick={() => navigate("/")}
+                className="mt-8 text-blue-600 font-medium hover:text-blue-800"
+              >
+                &larr; Return to Home
+              </button>
             </div>
-          </form>
+          ) : isFormOpen === null ? (
+            <div className="flex justify-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+          ) : (
+            <>
+              <div className="mb-8 text-center">
+                <img
+                  src="/nce-logo.png"
+                  alt="nce-logo"
+                  className="mx-auto h-20 w-20 text-blue-600"
+                />
+                <button
+                  onClick={() => navigate("/admin/login")}
+                  className="absolute top-4 right-4 text-xs font-medium text-blue-600 hover:text-blue-800 border border-blue-200 rounded-full px-3 py-1 hover:bg-blue-50 transition-colors"
+                >
+                  Admin Login
+                </button>
+                <h2 className="mt-2 text-3xl font-extrabold text-gray-900">
+                  Nalanda College of Engineering
+                </h2>
+                <h3 className="mt-2 text-2xl font-extrabold text-gray-900">
+                  Placement Coordination Form
+                </h3>
+                <p className="mt-2 text-sm text-gray-600 max-w-lg mx-auto">
+                  Please fill in your details accurately. This information will
+                  be used for upcoming placement drives.
+                </p>
+              </div>
+
+              <form className="space-y-6" onSubmit={handleSubmit}>
+                {/* Personal Details */}
+                <div className="bg-gray-50 p-4 rounded-md border border-gray-100">
+                  <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
+                    <User className="h-5 w-5 text-gray-500" /> Personal Details
+                  </h3>
+                  <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+                    <Input
+                      label="Full Name"
+                      name="fullName"
+                      value={formData.fullName}
+                      onChange={handleChange}
+                      required
+                      placeholder="Enter your name"
+                    />
+
+                    <Input
+                      label="Registration Number"
+                      name="registrationNumber"
+                      value={formData.registrationNumber}
+                      onChange={handleChange}
+                      required
+                      placeholder="Enter your Registration No."
+                    />
+                    <Input
+                      label="Email Address"
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      placeholder="Enter your Email Id"
+                    />
+
+                    <Input
+                      label="WhatsApp Number"
+                      type="tel"
+                      name="whatsappContact"
+                      value={formData.whatsappContact}
+                      onChange={handleChange}
+                      required
+                      placeholder="Enter WhatsApp No."
+                    />
+                    <Input
+                      label="Alternate Number"
+                      type="tel"
+                      name="alternateContact"
+                      value={formData.alternateContact}
+                      onChange={handleChange}
+                      required
+                      placeholder="Enter Alternate No."
+                    />
+                    <Input
+                      label="Father's Name"
+                      name="fatherName"
+                      value={formData.fatherName}
+                      onChange={handleChange}
+                      required
+                      placeholder="Enter father's name"
+                    />
+                    <Input
+                      label="Father's Contact Number"
+                      type="tel"
+                      name="fullContactNumber"
+                      value={formData.fullContactNumber}
+                      onChange={handleChange}
+                      required
+                      placeholder="Enter Father's Contact No."
+                    />
+                    <Select
+                      label="Gender"
+                      name="gender"
+                      value={formData.gender}
+                      onChange={handleChange}
+                      required
+                      options={[
+                        { value: "Male", label: "Male" },
+                        { value: "Female", label: "Female" },
+                        { value: "Other", label: "Other" },
+                      ]}
+                    />
+                    <Input
+                      label="Date of Birth"
+                      type="text"
+                      name="dob"
+                      value={formData.dob}
+                      onChange={handleDobChange}
+                      required
+                      placeholder="DD/MM/YYYY"
+                      maxLength={10}
+                    />
+                    <Input
+                      label="Aadhar Number"
+                      name="aadharNumber"
+                      value={formData.aadharNumber}
+                      onChange={handleChange}
+                      required
+                      placeholder="Enter 12-digit Aadhar No."
+                      minLength={12}
+                      maxLength={12}
+                    />
+                  </div>
+                </div>
+
+                {/* Academic Details */}
+                <div className="bg-gray-50 p-4 rounded-md border border-gray-100">
+                  <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
+                    <GraduationCap className="h-5 w-5 text-gray-500" /> Academic
+                    Details
+                  </h3>
+                  <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+                    <Select
+                      label="Branch"
+                      name="branch"
+                      value={formData.branch}
+                      onChange={handleChange}
+                      required
+                      options={BRANCHES}
+                      placeholder="Select Branch"
+                    />
+                    <Select
+                      label="College Name"
+                      name="collegeName"
+                      value={formData.collegeName}
+                      onChange={handleChange}
+                      required
+                      options={BIHAR_ENGINEERING_COLLEGES}
+                      placeholder="Select College"
+                    />
+                    <Select
+                      label="Batch"
+                      name="batch"
+                      value={formData.batch}
+                      onChange={handleChange}
+                      required
+                      options={BATCHES}
+                      placeholder="Select Batch"
+                    />
+                    <Input
+                      label="Current CGPA"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      max="10"
+                      name="currentCgpa"
+                      value={formData.currentCgpa}
+                      onChange={handleChange}
+                      required
+                      placeholder="Enter Current CGPA (e.g. 8)"
+                    />
+                    <Input
+                      label="Active Backlogs"
+                      type="number"
+                      min="0"
+                      name="activeBacklogs"
+                      value={formData.activeBacklogs}
+                      onChange={handleChange}
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+
+                {/* Professional Details (Percentages) */}
+                <div className="bg-gray-50 p-4 rounded-md border border-gray-100">
+                  <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
+                    <Briefcase className="h-5 w-5 text-gray-500" /> Academic
+                    Performance
+                  </h3>
+                  <div className="grid grid-cols-1 gap-y-6 gap-x-4">
+                    <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+                      <Input
+                        label="10th Percentage"
+                        name="percentage10th"
+                        value={formData.percentage10th}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter 10th % (e.g. 95%)"
+                      />
+                      <Input
+                        label="Enter 10th Institute Name"
+                        name="school10th"
+                        value={formData.school10th}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter School Name"
+                      />
+                      <Input
+                        label="Enter 10th Board Name"
+                        name="board10th"
+                        value={formData.board10th}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter Board Name"
+                      />
+                      <Input
+                        label="12th Percentage/ Diploma CGPA"
+                        name="percentage12th"
+                        value={formData.percentage12th}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter 12th Percentage/ Diploma CGPA"
+                      />
+                      <Input
+                        label="Enter 12th/ Diploma Institute Name"
+                        name="institute12th"
+                        value={formData.institute12th}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter Institute Name"
+                      />
+                      <Input
+                        label="Enter 12th/ Diploma Board Name"
+                        name="board12th"
+                        value={formData.board12th}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter Board Name"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6 flex gap-3 items-start">
+                  <Info className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <div className="text-sm text-amber-800">
+                    <p className="font-bold mb-1">
+                      Required Documents to Carry:
+                    </p>
+                    <ul className="list-disc pl-4 space-y-1">
+                      <li>Original Aadhar Card + 2 Photocopies</li>
+                      <li>Original 10th Marksheet + 2 Photocopies</li>
+                      <li>Original 12th/Diploma Marksheet + 2 Photocopies</li>
+                      <li>2 Copies of Current Btech Marksheet</li>
+                      <li>2 Copies of Resume</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="pt-4">
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    className="w-full flex justify-center items-center gap-2"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      "Submitting..."
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4" /> Submit Application
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </>
+          )}
         </div>
       </div>
       <ToastContainer position="top-right" autoClose={3000} />

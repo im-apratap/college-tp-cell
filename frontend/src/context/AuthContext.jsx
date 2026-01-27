@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 
 const AuthContext = createContext(null);
@@ -15,11 +15,11 @@ export const AuthProvider = ({ children }) => {
         `${import.meta.env.VITE_API_BASE_URL}/admin/me`,
         {
           withCredentials: true,
-        }
+        },
       );
       setUser(response.data.data);
       setIsAuthenticated(true);
-    } catch (error) {
+    } catch {
       setUser(null);
       setIsAuthenticated(false);
       // Optional: Clear localStorage if sync is needed, but we rely on state now
@@ -62,4 +62,5 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);

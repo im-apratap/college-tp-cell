@@ -6,7 +6,36 @@ import { sendEmail } from "../utils/sendEmail.js";
 
 import crypto from "crypto";
 
+// Hardcoded deadline. ideally this should be in an env var
+const PLACEMENT_DEADLINE = new Date("2026-01-27T21:00:00+05:30"); // Example deadline
+
+const isFormOpen = () => {
+  return new Date() < PLACEMENT_DEADLINE;
+};
+
+const getFormStatus = asyncHandler(async (req, res) => {
+  const isOpen = isFormOpen();
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        isOpen,
+        message: isOpen ? "Applications are open" : "Applications are closed",
+        deadline: PLACEMENT_DEADLINE,
+      },
+      "Form status fetched successfully",
+    ),
+  );
+});
+
 const submitProfile = asyncHandler(async (req, res) => {
+  if (!isFormOpen()) {
+    throw new ApiError(
+      403,
+      "Application submission is closed. Please contact the administrator.",
+    );
+  }
+
   try {
     const {
       fullName,
@@ -453,4 +482,4 @@ const getProfile = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, profile, "Profile fetched successfully"));
 });
 
-export { submitProfile, getProfile };
+export { submitProfile, getProfile, getFormStatus };
