@@ -169,6 +169,12 @@ const studentProfileSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    interviewStatus: {
+      type: String,
+      enum: ["pending", "next", "in_interview", "completed"],
+      default: "pending",
+      index: true,
+    },
   },
   {
     timestamps: true,

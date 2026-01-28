@@ -482,4 +482,48 @@ const getProfile = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, profile, "Profile fetched successfully"));
 });
 
-export { submitProfile, getProfile, getFormStatus };
+// Get Public Queue Status
+const getQueueStatus = asyncHandler(async (req, res) => {
+  const queue = await StudentProfile.find({
+    interviewStatus: { $in: ["next", "in_interview"] },
+    isPresent: true,
+  })
+    .select("fullName uniqueId interviewStatus branch batch")
+    .sort({ updatedAt: 1 }); // FIFO for queue
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, queue, "Queue status fetched successfully"));
+});
+
+// Update Queue Status (Admin only)
+const updateQueueStatus = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  if (!["pending", "next", "in_interview", "completed"].includes(status)) {
+    throw new ApiError(400, "Invalid status");
+  }
+
+  const student = await StudentProfile.findByIdAndUpdate(
+    id,
+    { interviewStatus: status },
+    { new: true },
+  );
+
+  if (!student) {
+    throw new ApiError(404, "Student not found");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, student, "Student status updated successfully"));
+});
+
+export {
+  submitProfile,
+  getProfile,
+  getFormStatus,
+  getQueueStatus,
+  updateQueueStatus,
+};

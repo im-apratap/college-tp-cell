@@ -259,6 +259,13 @@ const AdminDashboard = () => {
             <div className="flex items-center">
               <Button
                 variant="outline"
+                onClick={() => navigate("/admin/queue")}
+                className="flex items-center gap-2 text-sm mr-2"
+              >
+                Queue Manager
+              </Button>
+              <Button
+                variant="outline"
                 onClick={handleLogout}
                 className="flex items-center gap-2 text-sm"
               >

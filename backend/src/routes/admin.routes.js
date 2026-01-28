@@ -8,6 +8,7 @@ import {
   getCurrentAdmin,
   verifyStudentProfile,
 } from "../controllers/admin.controller.js";
+import { updateQueueStatus } from "../controllers/placement.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
@@ -21,5 +22,6 @@ router.route("/me").get(verifyJWT, getCurrentAdmin);
 router.route("/submissions").get(verifyJWT, getAllStudentProfiles);
 router.route("/submissions/:id").delete(verifyJWT, deleteStudentProfile);
 router.route("/verify/:id").patch(verifyJWT, verifyStudentProfile);
+router.route("/queue-status/:id").patch(verifyJWT, updateQueueStatus);
 
 export default router;

@@ -3,6 +3,9 @@ import StudentForm from "./pages/StudentForm";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import QueueBoard from "./pages/QueueBoard";
+import AdminQueueManager from "./pages/AdminQueueManager";
+import AdminPortal from "./pages/AdminPortal";
 
 import { AuthProvider } from "./context/AuthContext";
 
@@ -12,6 +15,7 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<StudentForm />} />
+          <Route path="/admin" element={<AdminPortal />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route
             path="/admin/dashboard"
@@ -21,6 +25,15 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/admin/queue"
+            element={
+              <ProtectedRoute>
+                <AdminQueueManager />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/board" element={<QueueBoard />} />
         </Routes>
       </AuthProvider>
     </Router>
