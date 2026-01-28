@@ -395,10 +395,10 @@ const StudentForm = () => {
                 </p>
               </div>
               <button
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/board")}
                 className="mt-8 text-blue-600 font-medium hover:text-blue-800"
               >
-                &larr; Return to Home
+                Check the Queue System For Interview
               </button>
             </div>
           ) : isFormOpen === null ? (
