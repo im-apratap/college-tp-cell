@@ -58,7 +58,7 @@ const AdminLogin = () => {
       );
 
       // Redirect to dashboard immediately
-      navigate("/admin/dashboard");
+      navigate("/admin");
     } catch (error) {
       toast.error(error.response?.data?.message || "Invalid credentials");
     } finally {
