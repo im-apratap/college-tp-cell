@@ -6,8 +6,9 @@ import { sendEmail } from "../utils/sendEmail.js";
 
 import crypto from "crypto";
 
-// Hardcoded deadline. ideally this should be in an env var
-const PLACEMENT_DEADLINE = new Date("2026-01-30T21:00:00+05:30"); // Example deadline
+const PLACEMENT_DEADLINE = new Date(
+  process.env.PLACEMENT_DEADLINE,
+);
 
 const isFormOpen = () => {
   return new Date() < PLACEMENT_DEADLINE;
