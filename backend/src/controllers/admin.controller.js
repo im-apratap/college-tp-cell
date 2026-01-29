@@ -166,6 +166,24 @@ const verifyStudentProfile = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, student, "Student marked as present"));
 });
 
+const getStudentByUniqueId = asyncHandler(async (req, res) => {
+  const { uniqueId } = req.params;
+
+  if (!uniqueId) {
+    throw new ApiError(400, "Unique ID is required");
+  }
+
+  const student = await StudentProfile.findOne({ uniqueId: uniqueId.trim() });
+
+  if (!student) {
+    throw new ApiError(404, "Student not found");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, student, "Student fetched successfully"));
+});
+
 const getCurrentAdmin = asyncHandler(async (req, res) => {
   return res
     .status(200)
@@ -180,4 +198,5 @@ export {
   deleteStudentProfile,
   getCurrentAdmin,
   verifyStudentProfile,
+  getStudentByUniqueId,
 };

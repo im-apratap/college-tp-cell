@@ -6,6 +6,7 @@ import {
   MonitorPlay,
   ShieldCheck,
   LogIn,
+  ScanQrCode,
 } from "lucide-react";
 import Button from "../components/Button";
 
@@ -69,6 +70,22 @@ const AdminPortal = () => {
                     </h3>
                     <p className="text-sm text-gray-500">
                       Manage interview flow
+                    </p>
+                  </div>
+                </div>
+              </Link>
+
+              <Link to="/admin/scan" className="block w-full group">
+                <div className="flex items-center p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md hover:border-indigo-300 transition-all cursor-pointer group-hover:bg-indigo-50">
+                  <div className="p-3 bg-indigo-100 rounded-full mr-4 group-hover:bg-white">
+                    <ScanQrCode className="h-6 w-6 text-indigo-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-indigo-700">
+                      Scan QR Code
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      For Scanning QR
                     </p>
                   </div>
                 </div>

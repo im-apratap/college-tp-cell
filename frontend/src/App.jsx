@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import QueueBoard from "./pages/QueueBoard";
 import AdminQueueManager from "./pages/AdminQueueManager";
 import AdminPortal from "./pages/AdminPortal";
+import ScannerPage from "./pages/ScannerPage";
 
 import { AuthProvider } from "./context/AuthContext";
 
@@ -30,6 +31,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <AdminQueueManager />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/scan"
+            element={
+              <ProtectedRoute>
+                <ScannerPage />
               </ProtectedRoute>
             }
           />
