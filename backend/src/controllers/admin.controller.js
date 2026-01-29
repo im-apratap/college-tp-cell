@@ -37,6 +37,7 @@ const registerAdmin = asyncHandler(async (req, res) => {
     email,
     password,
     username: username.toLowerCase(),
+    role: req.body.role || "admin",
   });
 
   const createdAdmin = await Admin.findById(admin._id).select("-password");

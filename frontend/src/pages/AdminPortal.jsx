@@ -39,25 +39,33 @@ const AdminPortal = () => {
             <>
               <div className="bg-green-50 p-4 rounded-md border border-green-200 mb-6">
                 <p className="text-sm text-green-700 text-center font-medium">
-                  You are currently logged in
+                  Logged in as{" "}
+                  {JSON.parse(localStorage.getItem("adminUser"))?.role ===
+                  "volunteer"
+                    ? "Volunteer"
+                    : "Admin"}
                 </p>
               </div>
 
-              <Link to="/admin/dashboard" className="block w-full group">
-                <div className="flex items-center p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group-hover:bg-blue-50">
-                  <div className="p-3 bg-blue-100 rounded-full mr-4 group-hover:bg-white">
-                    <LayoutDashboard className="h-6 w-6 text-blue-600" />
+              {/* Hide Dashboard for Volunteers */}
+              {JSON.parse(localStorage.getItem("adminUser"))?.role !==
+                "volunteer" && (
+                <Link to="/admin/dashboard" className="block w-full group">
+                  <div className="flex items-center p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer group-hover:bg-blue-50">
+                    <div className="p-3 bg-blue-100 rounded-full mr-4 group-hover:bg-white">
+                      <LayoutDashboard className="h-6 w-6 text-blue-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-700">
+                        Dashboard
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        View overall stats and student list
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-700">
-                      Dashboard
-                    </h3>
-                    <p className="text-sm text-gray-500">
-                      View overall stats and student list
-                    </p>
-                  </div>
-                </div>
-              </Link>
+                </Link>
+              )}
 
               <Link to="/admin/queue" className="block w-full group">
                 <div className="flex items-center p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md hover:border-purple-300 transition-all cursor-pointer group-hover:bg-purple-50">
@@ -84,9 +92,7 @@ const AdminPortal = () => {
                     <h3 className="text-lg font-bold text-gray-900 group-hover:text-indigo-700">
                       Scan QR Code
                     </h3>
-                    <p className="text-sm text-gray-500">
-                      For Scanning QR
-                    </p>
+                    <p className="text-sm text-gray-500">For Scanning QR</p>
                   </div>
                 </div>
               </Link>

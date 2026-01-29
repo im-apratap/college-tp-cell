@@ -41,7 +41,7 @@ const AdminLogin = () => {
         payload,
         {
           withCredentials: true,
-        }
+        },
       );
 
       toast.success(response.data.message || "Login successful");
@@ -54,7 +54,7 @@ const AdminLogin = () => {
       // Store user info if needed
       localStorage.setItem(
         "adminUser",
-        JSON.stringify(response.data.data.user)
+        JSON.stringify(response.data.data.user),
       );
 
       // Redirect to dashboard immediately
@@ -73,8 +73,11 @@ const AdminLogin = () => {
           <Lock className="h-6 w-6 text-white" />
         </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Admin Sign In
+          Portal Login
         </h2>
+        <p className="mt-2 text-center text-sm text-gray-600">
+          Admin & Volunteer Access
+        </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">

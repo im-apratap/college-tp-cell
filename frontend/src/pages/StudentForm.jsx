@@ -413,12 +413,7 @@ const StudentForm = () => {
                   alt="nce-logo"
                   className="mx-auto h-20 w-20 text-blue-600"
                 />
-                <button
-                  onClick={() => navigate("/admin/login")}
-                  className="absolute top-4 right-4 text-xs font-medium text-blue-600 hover:text-blue-800 border border-blue-200 rounded-full px-3 py-1 hover:bg-blue-50 transition-colors"
-                >
-                  Admin Login
-                </button>
+
                 <h2 className="mt-2 text-3xl font-extrabold text-gray-900">
                   Nalanda College of Engineering
                 </h2>
