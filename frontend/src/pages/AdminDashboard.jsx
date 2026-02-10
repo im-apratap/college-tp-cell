@@ -140,6 +140,7 @@ const AdminDashboard = () => {
       "Resume Link": student.resumeLink || "N/A",
       "LinkedIn Profile": student.linkedinProfile || "N/A",
       "Portfolio Link": student.portfolioLink || "N/A",
+      "Interview Status": student.interviewStatus || "Pending",
       "Present?": student.isPresent ? "Yes" : "No",
     }));
 

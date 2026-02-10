@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Users, User, ArrowRight, Loader } from "lucide-react";
+import { Users, User, ArrowRight, Loader, Hourglass } from "lucide-react";
 
 const QueueBoard = () => {
   const [queue, setQueue] = useState([]);
@@ -30,6 +30,7 @@ const QueueBoard = () => {
     (s) => s.interviewStatus === "in_interview",
   );
   const nextInLine = queue.filter((s) => s.interviewStatus === "next");
+  const standbyStudents = queue.filter((s) => s.interviewStatus === "standby");
 
   if (loading) {
     return (
@@ -51,7 +52,7 @@ const QueueBoard = () => {
           </p>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Currently Interviewing */}
           <section className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
             <div className="flex items-center gap-3 mb-8 border-b border-gray-100 pb-4">
@@ -140,12 +141,48 @@ const QueueBoard = () => {
               </div>
             )}
           </section>
+
+          {/* Standby */}
+          <section className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
+            <div className="flex items-center gap-3 mb-8 border-b border-gray-100 pb-4">
+              <div className="p-3 bg-orange-100 rounded-full">
+                <Hourglass className="h-8 w-8 text-orange-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-800">Standby</h2>
+            </div>
+
+            {standbyStudents.length === 0 ? (
+              <div className="text-center py-12 text-gray-500 italic">
+                No students on standby
+              </div>
+            ) : (
+              <div className="grid gap-4">
+                {standbyStudents.map((student, index) => (
+                  <div
+                    key={student.uniqueId}
+                    className="flex justify-between items-center bg-gray-50 p-5 rounded-xl border border-gray-200 hover:border-gray-300 transition-all text-sm"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-800">
+                          {student.fullName}
+                        </h3>
+                        <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                          <span className="font-medium text-gray-600">
+                            {student.branch}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
         </div>
 
         <footer className="mt-16 text-center text-gray-400 text-sm">
-          <p>
-            Nalanda College of Engineering •  Training and Placement Cell
-          </p>
+          <p>Nalanda College of Engineering • Training and Placement Cell</p>
         </footer>
       </div>
     </div>

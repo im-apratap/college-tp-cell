@@ -6,9 +6,7 @@ import { sendEmail } from "../utils/sendEmail.js";
 
 import crypto from "crypto";
 
-const PLACEMENT_DEADLINE = new Date(
-  process.env.PLACEMENT_DEADLINE,
-);
+const PLACEMENT_DEADLINE = new Date(process.env.PLACEMENT_DEADLINE);
 
 const isFormOpen = () => {
   return new Date() < PLACEMENT_DEADLINE;
@@ -486,7 +484,7 @@ const getProfile = asyncHandler(async (req, res) => {
 // Get Public Queue Status
 const getQueueStatus = asyncHandler(async (req, res) => {
   const queue = await StudentProfile.find({
-    interviewStatus: { $in: ["next", "in_interview"] },
+    interviewStatus: { $in: ["standby", "next", "in_interview"] },
     isPresent: true,
   })
     .select("fullName uniqueId interviewStatus branch batch")
@@ -502,7 +500,11 @@ const updateQueueStatus = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
-  if (!["pending", "next", "in_interview", "completed"].includes(status)) {
+  if (
+    !["pending", "standby", "next", "in_interview", "completed"].includes(
+      status,
+    )
+  ) {
     throw new ApiError(400, "Invalid status");
   }
 

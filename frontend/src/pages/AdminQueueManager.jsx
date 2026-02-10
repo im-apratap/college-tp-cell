@@ -2,7 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-import { ArrowRight, UserCheck, Play, CheckSquare, Clock } from "lucide-react";
+import {
+  ArrowRight,
+  UserCheck,
+  Play,
+  CheckSquare,
+  Clock,
+  Hourglass,
+} from "lucide-react";
 import Button from "../components/Button";
 
 // Since strict mode in React 18 can cause issues with beautiful-dnd, we might need a workaround or just use simple buttons for MVP stability.
@@ -64,6 +71,10 @@ const AdminQueueManager = () => {
         s.uniqueId.toLowerCase().includes(searchTerm.toLowerCase())),
   );
 
+  const standbyStudents = students.filter(
+    (s) => s.interviewStatus === "standby",
+  );
+
   const nextStudents = students.filter((s) => s.interviewStatus === "next");
   const interviewingStudents = students.filter(
     (s) => s.interviewStatus === "in_interview",
@@ -94,12 +105,36 @@ const AdminQueueManager = () => {
 
       <div className="flex gap-2 mt-3 pt-3 border-t border-gray-100 justify-end">
         {currentList === "pending" && (
-          <button
-            onClick={() => updateStatus(student._id, "next")}
-            className="text-xs bg-purple-100 text-purple-700 px-3 py-1.5 rounded-md font-semibold hover:bg-purple-200 flex items-center gap-1"
-          >
-            Add to Queue <ArrowRight className="h-3 w-3" />
-          </button>
+          <>
+            <button
+              onClick={() => updateStatus(student._id, "next")}
+              className="text-xs bg-purple-100 text-purple-700 px-3 py-1.5 rounded-md font-semibold hover:bg-purple-200 flex items-center gap-1"
+            >
+              Add to Queue <ArrowRight className="h-3 w-3" />
+            </button>
+            <button
+              onClick={() => updateStatus(student._id, "standby")}
+              className="text-xs bg-orange-100 text-orange-700 px-3 py-1.5 rounded-md font-semibold hover:bg-orange-200 flex items-center gap-1"
+            >
+              Move to Standby <ArrowRight className="h-3 w-3" />
+            </button>
+          </>
+        )}
+        {currentList === "standby" && (
+          <>
+            <button
+              onClick={() => updateStatus(student._id, "pending")}
+              className="text-xs text-gray-500 hover:text-gray-700 px-2"
+            >
+              Back
+            </button>
+            <button
+              onClick={() => updateStatus(student._id, "next")}
+              className="text-xs bg-purple-100 text-purple-700 px-3 py-1.5 rounded-md font-semibold hover:bg-purple-200 flex items-center gap-1"
+            >
+              Move to Up Next <ArrowRight className="h-3 w-3" />
+            </button>
+          </>
         )}
         {currentList === "next" && (
           <>
@@ -147,7 +182,7 @@ const AdminQueueManager = () => {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 h-[calc(100vh-150px)] overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 h-[calc(100vh-150px)] overflow-hidden">
         {/* Pending */}
         <div className="flex flex-col bg-gray-100 rounded-xl overflow-hidden h-full">
           <div className="bg-gray-200 p-3 font-semibold text-gray-700 flex flex-col gap-2 border-b border-gray-300">
@@ -170,6 +205,21 @@ const AdminQueueManager = () => {
               </p>
             )}
             {filteredPendingStudents.map((s) => renderCard(s, "pending"))}
+          </div>
+        </div>
+
+        {/* Standby */}
+        <div className="flex flex-col bg-orange-50 rounded-xl overflow-hidden h-full border border-orange-100">
+          <div className="bg-orange-100 p-3 font-semibold text-orange-900 flex items-center gap-2 border-b border-orange-200">
+            <Hourglass className="h-4 w-4" /> Standby ({standbyStudents.length})
+          </div>
+          <div className="p-4 overflow-y-auto flex-1">
+            {standbyStudents.length === 0 && (
+              <p className="text-orange-300 text-sm text-center italic">
+                No students on standby
+              </p>
+            )}
+            {standbyStudents.map((s) => renderCard(s, "standby"))}
           </div>
         </div>
 

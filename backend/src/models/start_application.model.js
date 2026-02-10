@@ -171,7 +171,7 @@ const studentProfileSchema = new Schema(
     },
     interviewStatus: {
       type: String,
-      enum: ["pending", "next", "in_interview", "completed"],
+      enum: ["pending", "standby", "next", "in_interview", "completed"],
       default: "pending",
       index: true,
     },
